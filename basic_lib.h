@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "parameter.h"
 #define myMax(a,b) ((a)>(b)?(a):(b))
 #define myMin(a,b) ((a)<(b)?(a):(b))
 using namespace std;

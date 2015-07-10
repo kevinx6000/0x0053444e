@@ -6,7 +6,6 @@
 #include "../packet/packet.h"
 #include "../IP/IP.h"
 #include "../switch/switch.h"
-#include "../parameter.h"
 
 // Switch class
 Switch::Switch(int id):Node(id){
