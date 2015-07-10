@@ -1,4 +1,6 @@
 // This header defines the parameters
+#ifndef PARAMETER_H
+#define PARAMETER_H
 
 /******** K *******/
 #define SIZE_OF_K 18
@@ -13,4 +15,4 @@
 
 /******** Link ********/
 #define LINK_CAPACITY 1e4
-
+#endif
