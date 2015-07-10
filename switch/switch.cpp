@@ -95,7 +95,7 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	evt.setTimeStamp(timeStamp + switchOutDelay);
 	evt.setEventType(EVENT_FORWARD);
 	evt.setPacket(pkt);
-	evt.setID(link[result.getOutputPort()]);
+	evt.setID(link[result.getOutputPort()].id);
 
 	// Update available time
 	avail[outputPort] = timeStamp + switchOutDelay;

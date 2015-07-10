@@ -16,7 +16,7 @@ class Node{
 		int getID(void);
 		IP getIP(void);
 		virtual Event forward(double,Packet);
-		vector<int>link;
+		vector<EDGE>link;
 		vector<double>avail;
 	private:
 		int id;

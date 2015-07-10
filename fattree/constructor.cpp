@@ -96,14 +96,18 @@ Fattree::Fattree(int k){
 
 	// Link initialization
 	int src, dst;
+	EDGE etmp;
+	etmp.cap = LINK_CAPACITY;
 
 	// Core - aggregrate links
 	for(int i = 0; i < numberOfAggregate; i++)
 		for(int j = 0; j < pod/2; j++){
 			src = numberOfCore + i;
 			dst = (i%(pod/2))*pod/2 + j;
-			node[src]->link.push_back(dst);
-			node[dst]->link.push_back(src);
+			etmp.id = dst;
+			node[src]->link.push_back(etmp);
+			etmp.id = src;
+			node[dst]->link.push_back(etmp);
 			node[src]->avail.push_back(0.0);
 			node[dst]->avail.push_back(0.0);
 		}
@@ -113,8 +117,10 @@ Fattree::Fattree(int k){
 		for(int j = 0; j < pod/2; j++){
 			src = numberOfCore + i;
 			dst = numberOfCore + numberOfAggregate + (i/(pod/2))*pod/2 + j;
-			node[src]->link.push_back(dst);
-			node[dst]->link.push_back(src);
+			etmp.id = dst;
+			node[src]->link.push_back(etmp);
+			etmp.id = src;
+			node[dst]->link.push_back(etmp);
 			node[src]->avail.push_back(0.0);
 			node[dst]->avail.push_back(0.0);
 		}
@@ -124,8 +130,10 @@ Fattree::Fattree(int k){
 		for(int j = 0; j < pod/2; j++){
 			src = numberOfCore + numberOfAggregate + i;
 			dst = numberOfCore + numberOfAggregate + numberOfEdge + i*(pod/2) + j;
-			node[src]->link.push_back(dst);
-			node[dst]->link.push_back(src);
+			etmp.id = dst;
+			node[src]->link.push_back(etmp);
+			etmp.id = src;
+			node[dst]->link.push_back(etmp);
 			node[src]->avail.push_back(0.0);
 			node[dst]->avail.push_back(0.0);
 		}

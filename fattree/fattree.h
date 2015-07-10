@@ -4,6 +4,7 @@
 #include "../node/node.h"
 #include "../event/event.h"
 #include "../switch/switch.h"
+#include "../parameter.h"
 
 // Fat Tree class
 #ifndef FATTREE_H
