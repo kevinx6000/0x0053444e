@@ -18,6 +18,8 @@ class Packet{
 		void setDstPort(unsigned int);
 		void setProtocol(unsigned int);
 		void setSequence(int);
+		void setNumPkt(unsigned int);
+		void setDataRate(double);
 
 		// Get function
 		IP getSrcIP(void);
@@ -26,6 +28,8 @@ class Packet{
 		unsigned int getDstPort(void);
 		unsigned int getProtocol(void);
 		int getSequence(void);
+		unsigned int getNumPkt(void);
+		double getDataRate(void);
 
 		// Comparator function
 		bool operator<(const Packet&)const;
@@ -37,5 +41,9 @@ class Packet{
 		unsigned int dstPort;
 		unsigned int protocol;
 		int seq;
+
+		// Flow info
+		unsigned int numPkt;
+		double dataRate;
 };
 #endif

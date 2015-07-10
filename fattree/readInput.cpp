@@ -15,15 +15,17 @@
 void Fattree::readInput(void){
 
 	// Variables
-	int byte[4], srcPort, dstPort, protocol, timeStamp, seq;
+	int byte[4], srcPort, dstPort, protocol, timeStamp, seq, numPkt;
 	char charSrcIP[20], charDstIP[20];
+	double dataRate;
 	IP dstIP, srcIP;
 	Event evt;
 	Packet pkt;
 
 	// Packets (5-tuples and arrival time)
 	seq = 1;
-	while(scanf("%s %s %d %d %d %d", charSrcIP, charDstIP, &srcPort, &dstPort, &protocol, &timeStamp) == 6){
+	while(scanf("%s %s %d %d %d %d %d %lf", charSrcIP, charDstIP, 
+				&srcPort, &dstPort, &protocol, &timeStamp, &numPkt, &dataRate) == 8){
 
 		// Setup Packet Info
 		srcIP.setIP(charSrcIP);
@@ -34,6 +36,8 @@ void Fattree::readInput(void){
 		pkt.setDstPort(dstPort);
 		pkt.setProtocol(protocol);
 		pkt.setSequence(seq++);
+		pkt.setNumPkt(numPkt);
+		pkt.setDataRate(dataRate);
 
 		// Put into event queue
 		evt.setTimeStamp(timeStamp);

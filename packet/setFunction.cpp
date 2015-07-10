@@ -21,3 +21,9 @@ void Packet::setProtocol(unsigned int protocol){
 void Packet::setSequence(int ss){
 	this->seq = ss;
 }
+void Packet::setNumPkt(unsigned int numPkt){
+	this->numPkt = numPkt;
+}
+void Packet::setDataRate(double dataRate){
+	this->dataRate = dataRate;
+}
