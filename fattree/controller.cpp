@@ -10,7 +10,6 @@
 #include "../fattree/fattree.h"
 #include "../event/event.h"
 #include "../event/eventType.h"
-#include "../parameter.h"
 
 // Controller
 void Fattree::controller(Event ctrEvt){

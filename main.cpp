@@ -2,7 +2,6 @@
 // Header file
 #include "basic_lib.h"
 #include "fattree/fattree.h"
-#include "parameter.h"
 
 // Main
 int main(void)
