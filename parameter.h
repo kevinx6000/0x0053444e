@@ -15,4 +15,7 @@
 
 /******** Link ********/
 #define LINK_CAPACITY 1e4
+
+/******** Packet ********/
+#define PACKET_SIZE 4000
 #endif
