@@ -5,7 +5,6 @@
 #include "../event/eventType.h"
 #include "../host/host.h"
 #include "../IP/IP.h"
-#include "../parameter.h"
 
 // Host class
 Event Host::forward(double timeStamp, Packet pkt){
