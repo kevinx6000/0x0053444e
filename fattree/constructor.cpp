@@ -108,8 +108,6 @@ Fattree::Fattree(int k){
 			node[src]->link.push_back(etmp);
 			etmp.id = src;
 			node[dst]->link.push_back(etmp);
-			node[src]->avail.push_back(0.0);
-			node[dst]->avail.push_back(0.0);
 		}
 	
 	// Aggregate - Edge links
@@ -121,8 +119,6 @@ Fattree::Fattree(int k){
 			node[src]->link.push_back(etmp);
 			etmp.id = src;
 			node[dst]->link.push_back(etmp);
-			node[src]->avail.push_back(0.0);
-			node[dst]->avail.push_back(0.0);
 		}
 
 	// Edge - Host links
@@ -134,8 +130,6 @@ Fattree::Fattree(int k){
 			node[src]->link.push_back(etmp);
 			etmp.id = src;
 			node[dst]->link.push_back(etmp);
-			node[src]->avail.push_back(0.0);
-			node[dst]->avail.push_back(0.0);
 		}
 	
 	// Random seeds

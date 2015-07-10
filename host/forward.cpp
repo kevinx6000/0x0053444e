@@ -5,13 +5,14 @@
 #include "../event/eventType.h"
 #include "../host/host.h"
 #include "../IP/IP.h"
+#include "../parameter.h"
 
 // Host class
 Event Host::forward(double timeStamp, Packet pkt){
 
 	// Variables
 	bool arrive;
-	double transDelay = 1.0;
+	double forwardDelay;
 	IP selfIP, dstIP;
 	Event evt;
 
@@ -32,16 +33,12 @@ Event Host::forward(double timeStamp, Packet pkt){
 		return evt;
 	}
 	
-	// Link available time
-	timeStamp = max(timeStamp, avail[0]);
-	
 	// Forward to switch
-	evt.setTimeStamp(timeStamp + transDelay);
+	forwardDelay = pkt.getNumPkt()*PACKET_SIZE / pkt.getDataRate();
+	evt.setTimeStamp(timeStamp + forwardDelay);
 	evt.setEventType(EVENT_FORWARD);
 	evt.setID(link[0].id);
 	evt.setPacket(pkt);
 
-	// Update available time
-	avail[0] = timeStamp + transDelay;
 	return evt;
 }

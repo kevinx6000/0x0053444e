@@ -16,7 +16,7 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	// Variables
 	double TCAMDelay = TCAM_SEARCH_DELAY;
 	double controlInDelay = CONTROL_IN_DELAY;
-	double switchOutDelay = SWITCH_OUT_DELAY;
+	double forwardDelay;
 	int outputPort;
 	bool arrive;
 	Event evt;
@@ -88,17 +88,14 @@ Event Switch::forward(double timeStamp, Packet pkt){
 
 	// Foward after link available
 	outputPort = result.getOutputPort();
-	timeStamp = max(timeStamp + TCAMDelay, avail[outputPort]);
-	/* Modify link capacity, data rate and transmission delay */
+	timeStamp = timeStamp + TCAMDelay;
 
 	// Forward event
-	evt.setTimeStamp(timeStamp + switchOutDelay);
+	forwardDelay = pkt.getNumPkt()*PACKET_SIZE / pkt.getDataRate();
+	evt.setTimeStamp(timeStamp + forwardDelay);
 	evt.setEventType(EVENT_FORWARD);
 	evt.setPacket(pkt);
 	evt.setID(link[result.getOutputPort()].id);
-
-	// Update available time
-	avail[outputPort] = timeStamp + switchOutDelay;
 
 	// Return event
 	return evt;
