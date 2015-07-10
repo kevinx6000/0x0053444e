@@ -38,7 +38,7 @@ Event Host::forward(double timeStamp, Packet pkt){
 	// Forward to switch
 	evt.setTimeStamp(timeStamp + transDelay);
 	evt.setEventType(EVENT_FORWARD);
-	evt.setID(link[0]);
+	evt.setID(link[0].id);
 	evt.setPacket(pkt);
 
 	// Update available time

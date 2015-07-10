@@ -11,4 +11,8 @@
 #define myMax(a,b) ((a)>(b)?(a):(b))
 #define myMin(a,b) ((a)<(b)?(a):(b))
 using namespace std;
+typedef struct{
+	int id;
+	double cap;
+}EDGE;
 #endif

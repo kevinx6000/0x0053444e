@@ -11,3 +11,6 @@
 #define CONTROL_CPU_DELAY 0.625
 #define CONTROL_OUT_DELAY 1.0
 
+/******** Link ********/
+#define LINK_CAPACITY 1e4
+

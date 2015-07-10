@@ -31,7 +31,7 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 		nowID = BFS.front();
 		BFS.pop();
 		for(int i = 0; i < pod/2; i++){
-			dstID = node[nowID]->link[i];
+			dstID = node[nowID]->link[i].id;
 			pathMin[dstID] = copyTCAM[nowID].size();
 			BFS.push(dstID);
 			prevNode[dstID] = nowID;
@@ -45,7 +45,7 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 			nowID = BFS.front();
 			BFS.pop();
 			for(int j = 0; j < pod/2; j++){
-				dstID = node[nowID]->link[j];
+				dstID = node[nowID]->link[j].id;
 				pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
 				BFS.push(dstID);
 				prevNode[dstID] = nowID;
@@ -60,7 +60,7 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 		for(int i = 0; i < pod*pod/4; i++){
 			nowID = BFS.front();
 			BFS.pop();
-			dstID = node[nowID]->link[ dstIP.byte[1] ];
+			dstID = node[nowID]->link[ dstIP.byte[1] ].id;
 			if(!(i%(pod/2))){
 				pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
 				prevNode[dstID] = nowID;
@@ -88,7 +88,7 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 		for(int i = 0; i < pod/2; i++){
 			nowID = BFS.front();
 			BFS.pop();
-			dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ];
+			dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
 			if(!i){
 				pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
 				prevNode[dstID] = nowID;
@@ -125,7 +125,7 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 	ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
 	for(int i = pathLen-1; i >0 ; i--){
 		for(port = 0; port < node[revSeq[i]]->link.size(); port++)
-			if(node[revSeq[i]]->link[port] == revSeq[i-1]) break;
+			if(node[revSeq[i]]->link[port].id == revSeq[i-1]) break;
 		ent.setSID(revSeq[i]);
 		ent.setOutputPort(port);
 		vent.push_back(ent);
