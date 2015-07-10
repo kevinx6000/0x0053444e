@@ -19,9 +19,8 @@ void Fattree::controller(Event ctrEvt){
 	int pathLen;
 	int nowFlowID;
 	double delay;
-	double compDelay = CONTROL_CPU_DELAY;
-	double controlOutDelay = CONTROL_OUT_DELAY;
-	double TCAMWriteDelay = TCAM_WRITE_DELAY;
+	double flowSetupDelay = FLOW_SETUP_DELAY;
+	double computePathDelay = CONTROL_PATH_DELAY;
 	IP dstIP;
 	Event evt, ret;
 	Packet pkt;
@@ -62,7 +61,7 @@ void Fattree::controller(Event ctrEvt){
 
 				// Switch side install rule
 				ret.setEventType(EVENT_INSTALL);
-				ret.setTimeStamp(ctrEvt.getTimeStamp() + compDelay + controlOutDelay + TCAMWriteDelay);
+				ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
 				ret.setID(nid);
 				ret.setPacket(pkt);
 				ret.setEntry(ent);
@@ -106,7 +105,7 @@ void Fattree::controller(Event ctrEvt){
 
 			// Switch side event
 			ret.setEventType(EVENT_INSTALL);
-			ret.setTimeStamp(ctrEvt.getTimeStamp() + compDelay + controlOutDelay + TCAMWriteDelay);
+			ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
 			ret.setID(vent[i].getSID());
 			ret.setPacket(pkt);
 			ret.setEntry(vent[i]);
