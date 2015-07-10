@@ -1,4 +1,6 @@
 // This header defines the parameters
+#ifndef PARAMETER_H
+#define PARAMETER_H
 
 /******** K *******/
 #define SIZE_OF_K 18
@@ -11,3 +13,4 @@
 #define CONTROL_CPU_DELAY 0.625
 #define CONTROL_OUT_DELAY 1.0
 
+#endif
