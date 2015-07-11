@@ -133,5 +133,6 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 	ent.setSID(revSeq[0]);
 	ent.setOutputPort(pod/2 + dstIP.byte[3] - 2);
 	vent.push_back(ent);
+
 	return vent;
 }
