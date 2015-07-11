@@ -110,7 +110,7 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 		}
 		pathLen ++;
 	}
-
+printf("Hi, this is TEST\n");
 	// Create entries along these switches
 	nowID = BFS.front();
 	BFS.pop();
