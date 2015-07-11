@@ -24,7 +24,7 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 	pathMin[nowID] = 0;
 	queue<int>BFS;
 	BFS.push(nowID);
-	prevNode[nowID] = -1;
+	pathInit(pkt, prevNode);
 
 	// Edge -> Aggregate
 	if(srcIP.byte[1] != dstIP.byte[1] || srcIP.byte[2] != dstIP.byte[2]){
