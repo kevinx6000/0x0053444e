@@ -17,38 +17,48 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 	map<int,int>pathMin;
 
 	// Enumerate all path
-	int nowID = nid;
+	int nowID;
+	int srcID = nid;
 	int dstID;
 	int tmpMax;
 	int pathLen = 1;
-	pathMin[nowID] = 0;
+	int queSiz;
+	int endID;
+	double dataRate = pkt.getDataRate();
 	queue<int>BFS;
-	BFS.push(nowID);
-	pathInit(pkt, prevNode);
+	BFS.push(srcID);
+	pathMin[srcID] = 0;
+	endID = pathInit(pkt, prevNode);
+	prevNode[srcID] = srcID;
 
 	// Edge -> Aggregate
 	if(srcIP.byte[1] != dstIP.byte[1] || srcIP.byte[2] != dstIP.byte[2]){
 		nowID = BFS.front();
 		BFS.pop();
 		for(int i = 0; i < pod/2; i++){
-			dstID = node[nowID]->link[i].id;
-			pathMin[dstID] = copyTCAM[nowID].size();
-			BFS.push(dstID);
-			prevNode[dstID] = nowID;
+			if(node[nowID]->link[i].cap >= dataRate){
+				dstID = node[nowID]->link[i].id;
+				pathMin[dstID] = copyTCAM[nowID].size();
+				BFS.push(dstID);
+				prevNode[dstID] = nowID;
+			}
 		}
 		pathLen ++;
 	}
 
 	// Aggregate -> Core
 	if(srcIP.byte[1] != dstIP.byte[1]){
-		for(int i = 0; i < pod/2; i++){
+		queSiz = BFS.size();
+		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
 			for(int j = 0; j < pod/2; j++){
-				dstID = node[nowID]->link[j].id;
-				pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
-				BFS.push(dstID);
-				prevNode[dstID] = nowID;
+				if(node[nowID]->link[j].cap >= dataRate){
+					dstID = node[nowID]->link[j].id;
+					pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					BFS.push(dstID);
+					prevNode[dstID] = nowID;
+				}
 			}
 		}
 		pathLen ++;
@@ -57,26 +67,29 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 	// Core -> Aggregate
 	int siz;
 	if(srcIP.byte[1] != dstIP.byte[1]){
-		for(int i = 0; i < pod*pod/4; i++){
+		queSiz = BFS.size();
+		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
-			dstID = node[nowID]->link[ dstIP.byte[1] ].id;
-			if(!(i%(pod/2))){
-				pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
-				prevNode[dstID] = nowID;
-				BFS.push(dstID);
-				siz = copyTCAM[nowID].size();
-			}
-			else{
-				tmpMax = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
-				if(tmpMax < pathMin[dstID]){
-					pathMin[dstID] = tmpMax;
-					siz = copyTCAM[nowID].size();
+			if(node[nowID]->link[ dstIP.byte[1] ].cap >= dataRate){
+				dstID = node[nowID]->link[ dstIP.byte[1] ].id;
+				if(prevNode[dstID]==-1){
+					pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
 					prevNode[dstID] = nowID;
+					BFS.push(dstID);
+					siz = copyTCAM[nowID].size();
 				}
-				else if(tmpMax == pathMin[dstID] && copyTCAM[nowID].size() < siz){
-					siz = copyTCAM[nowID].size();
-					prevNode[dstID] = nowID;
+				else{
+					tmpMax = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					if(tmpMax < pathMin[dstID]){
+						pathMin[dstID] = tmpMax;
+						siz = copyTCAM[nowID].size();
+						prevNode[dstID] = nowID;
+					}
+					else if(tmpMax == pathMin[dstID] && copyTCAM[nowID].size() < siz){
+						siz = copyTCAM[nowID].size();
+						prevNode[dstID] = nowID;
+					}
 				}
 			}
 		}
@@ -85,26 +98,29 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 
 	// Aggregate -> Edge
 	if(srcIP.byte[1] != dstIP.byte[1] || srcIP.byte[2] != dstIP.byte[2]){
-		for(int i = 0; i < pod/2; i++){
+		queSiz = BFS.size();
+		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
-			dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
-			if(!i){
-				pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
-				prevNode[dstID] = nowID;
-				BFS.push(dstID);
-				siz = copyTCAM[nowID].size();
-			}
-			else{
-				tmpMax = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
-				if(tmpMax < pathMin[dstID]){
-					pathMin[dstID] = tmpMax;
-					siz = copyTCAM[nowID].size();
+			if(node[nowID]->link[ pod/2 + dstIP.byte[2] ].cap >= dataRate){
+				dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
+				if(prevNode[dstID]==-1){
+					pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
 					prevNode[dstID] = nowID;
+					BFS.push(dstID);
+					siz = copyTCAM[nowID].size();
 				}
-				else if(tmpMax == pathMin[dstID] && copyTCAM[nowID].size() < siz){
-					siz = copyTCAM[nowID].size();
-					prevNode[dstID] = nowID;
+				else{
+					tmpMax = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					if(tmpMax < pathMin[dstID]){
+						pathMin[dstID] = tmpMax;
+						siz = copyTCAM[nowID].size();
+						prevNode[dstID] = nowID;
+					}
+					else if(tmpMax == pathMin[dstID] && copyTCAM[nowID].size() < siz){
+						siz = copyTCAM[nowID].size();
+						prevNode[dstID] = nowID;
+					}
 				}
 			}
 		}
@@ -112,27 +128,29 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 	}
 
 	// Create entries along these switches
-	nowID = BFS.front();
-	BFS.pop();
 	vector<int>revSeq;
 	vector<Entry>vent;
-	for(int i = 0; i < pathLen; i++){
-		revSeq.push_back(nowID);
-		nowID = prevNode[nowID];
-	}
 	int port;
 	Entry ent;
-	ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
-	for(int i = pathLen-1; i >0 ; i--){
-		for(port = 0; port < node[revSeq[i]]->link.size(); port++)
-			if(node[revSeq[i]]->link[port].id == revSeq[i-1]) break;
-		ent.setSID(revSeq[i]);
-		ent.setOutputPort(port);
+	if(prevNode[endID]!=-1){
+		nowID = endID;
+		while(nowID != srcID){
+			revSeq.push_back(nowID);
+			nowID = prevNode[nowID];
+		}
+		revSeq.push_back(srcID);
+		/* Start from here */
+		ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
+		for(int i = pathLen-1; i >0 ; i--){
+			for(port = 0; port < node[revSeq[i]]->link.size(); port++)
+				if(node[revSeq[i]]->link[port].id == revSeq[i-1]) break;
+			ent.setSID(revSeq[i]);
+			ent.setOutputPort(port);
+			vent.push_back(ent);
+		}
+		ent.setSID(revSeq[0]);
+		ent.setOutputPort(pod/2 + dstIP.byte[3] - 2);
 		vent.push_back(ent);
+		return vent;
 	}
-	ent.setSID(revSeq[0]);
-	ent.setOutputPort(pod/2 + dstIP.byte[3] - 2);
-	vent.push_back(ent);
-
-	return vent;
 }

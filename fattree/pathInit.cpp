@@ -5,7 +5,7 @@
 #include "../IP/IP.h"
 
 // Path initialization
-void Fattree::pathInit(Packet pkt, map<int,int>& prev){
+int Fattree::pathInit(Packet pkt, map<int,int>& prev){
 	int hostID, srcID, dstID, nowID;
 	IP srcIP = pkt.getSrcIP();
 	IP dstIP = pkt.getDstIP();
@@ -63,4 +63,10 @@ void Fattree::pathInit(Packet pkt, map<int,int>& prev){
 		dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
 		prev[dstID] = -1;
 	}
+
+	// Destination switch ID
+	hostID = numberOfCore + numberOfAggregate + numberOfEdge +
+		dstIP.byte[1]*pod*pod/4 + dstIP.byte[2]*pod/2 + dstIP.byte[3]-2;
+	dstID = node[hostID]->link[0].id;
+	return dstID;
 }
