@@ -1,4 +1,3 @@
-
 // Headers
 #include "../basic_lib.h"
 #include "../packet/packet.h"
@@ -119,9 +118,6 @@ void Fattree::controller(Event ctrEvt){
 
 			// Record inserted entries
 			allEntry.push_back(vent);
-
-			// Clear Entry
-			vent.clear();
 		}
 
 		// No such path exists
@@ -129,6 +125,9 @@ void Fattree::controller(Event ctrEvt){
 			fprintf(stderr, "No such path exists.\n");
 			/* Here we may need to handle such situation */
 		}
+
+		// Clear Entry
+		vent.clear();
 	}
 
 	// DEBUG: if no event handled, stop
