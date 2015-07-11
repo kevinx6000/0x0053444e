@@ -6,7 +6,7 @@
 #include "../IP/IP.h"
 
 // Wired policy
-vector<Entry> Fattree::wired(int nid, Packet pkt){
+bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 
 	// IP
 	IP srcIP = pkt.getSrcIP();
@@ -21,7 +21,6 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 	int srcID = nid;
 	int dstID;
 	int tmpMax;
-	int pathLen = 1;
 	int queSiz;
 	int endID;
 	double dataRate = pkt.getDataRate();
@@ -43,7 +42,6 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 				prevNode[dstID] = nowID;
 			}
 		}
-		pathLen ++;
 	}
 
 	// Aggregate -> Core
@@ -61,7 +59,6 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 				}
 			}
 		}
-		pathLen ++;
 	}
 
 	// Core -> Aggregate
@@ -93,7 +90,6 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 				}
 			}
 		}
-		pathLen ++;
 	}
 
 	// Aggregate -> Edge
@@ -124,24 +120,21 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 				}
 			}
 		}
-		pathLen ++;
 	}
 
 	// Create entries along these switches
-	vector<int>revSeq;
-	vector<Entry>vent;
 	int port;
 	Entry ent;
+	vector<int>revSeq;
 	if(prevNode[endID]!=-1){
 		nowID = endID;
+		revSeq.push_back(endID);
 		while(nowID != srcID){
-			revSeq.push_back(nowID);
 			nowID = prevNode[nowID];
+			revSeq.push_back(nowID);
 		}
-		revSeq.push_back(srcID);
-		/* Start from here */
 		ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
-		for(int i = pathLen-1; i >0 ; i--){
+		for(int i = revSeq.size()-1; i > 0; i--){
 			for(port = 0; port < node[revSeq[i]]->link.size(); port++)
 				if(node[revSeq[i]]->link[port].id == revSeq[i-1]) break;
 			ent.setSID(revSeq[i]);
@@ -151,6 +144,9 @@ vector<Entry> Fattree::wired(int nid, Packet pkt){
 		ent.setSID(revSeq[0]);
 		ent.setOutputPort(pod/2 + dstIP.byte[3] - 2);
 		vent.push_back(ent);
-		return vent;
+		return true;
 	}
+
+	// No such path
+	else return false;
 }

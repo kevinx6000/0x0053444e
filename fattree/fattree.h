@@ -47,6 +47,6 @@ class Fattree{
 		bool legalAddr(IP);				// Check if address is legal
 		bool alreadyInstall(Event);		// Check if flow setup is needed
 		int pathInit(Packet,map<int,int>&);// Initialize the prev array with -1
-		vector<Entry> wired(int,Packet);	// Wired policy
+		bool wired(int,Packet,vector<Entry>&);	// Wired policy
 };
 #endif
