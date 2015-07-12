@@ -1,4 +1,3 @@
-
 // Headers
 #include "../basic_lib.h"
 #include "../packet/packet.h"
@@ -19,9 +18,8 @@ void Fattree::controller(Event ctrEvt){
 	int pathLen;
 	int nowFlowID;
 	double delay;
-	double compDelay = CONTROL_CPU_DELAY;
-	double controlOutDelay = CONTROL_OUT_DELAY;
-	double TCAMWriteDelay = TCAM_WRITE_DELAY;
+	double flowSetupDelay = FLOW_SETUP_DELAY;
+	double computePathDelay = CONTROL_PATH_DELAY;
 	IP dstIP;
 	Event evt, ret;
 	Packet pkt;
@@ -62,7 +60,7 @@ void Fattree::controller(Event ctrEvt){
 
 				// Switch side install rule
 				ret.setEventType(EVENT_INSTALL);
-				ret.setTimeStamp(ctrEvt.getTimeStamp() + compDelay + controlOutDelay + TCAMWriteDelay);
+				ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
 				ret.setID(nid);
 				ret.setPacket(pkt);
 				ret.setEntry(ent);
@@ -99,27 +97,38 @@ void Fattree::controller(Event ctrEvt){
 		rcdFlowID[pkt] = nowFlowID;
 
 		// Wired policy
-		vent = wired(nid, pkt);
+		if(wired(nid, pkt, vent)){
 
-		// Install rule
-		for(int i = 0; i < vent.size(); i++){
+			// Install rule
+			for(int i = 0; i < vent.size(); i++){
 
-			// Switch side event
-			ret.setEventType(EVENT_INSTALL);
-			ret.setTimeStamp(ctrEvt.getTimeStamp() + compDelay + controlOutDelay + TCAMWriteDelay);
-			ret.setID(vent[i].getSID());
-			ret.setPacket(pkt);
-			ret.setEntry(vent[i]);
-			eventQueue.push(ret);
+				// Switch side event
+				ret.setEventType(EVENT_INSTALL);
+				ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
+				ret.setID(vent[i].getSID());
+				ret.setPacket(pkt);
+				ret.setEntry(vent[i]);
+				eventQueue.push(ret);
 
-			// Controller side copy
-			if(copyTCAM[vent[i].getSID()].size() >= maxEntry)
-				copyTCAM[vent[i].getSID()].erase(copyTCAM[vent[i].getSID()].begin());
-			copyTCAM[vent[i].getSID()].push_back(vent[i]);
+				// Controller side copy
+				if(copyTCAM[vent[i].getSID()].size() >= maxEntry)
+					copyTCAM[vent[i].getSID()].erase(copyTCAM[vent[i].getSID()].begin());
+				copyTCAM[vent[i].getSID()].push_back(vent[i]);
+			}
+
+			// Record inserted entries
+			allEntry.push_back(vent);
+
+			// Consume Capacity
+			modifyCap(pkt, -1);
 		}
 
-		// Record inserted entries
-		allEntry.push_back(vent);
+		// No such path exists
+		else{
+			fprintf(stderr, "Error: %s to %s: ", pkt.getSrcIP().fullIP.c_str(), pkt.getDstIP().fullIP.c_str());
+			fprintf(stderr, "No such path exists.\n");
+			/* Here we may need to handle such situation */
+		}
 
 		// Clear Entry
 		vent.clear();

@@ -14,7 +14,6 @@ Event Switch::forward(double timeStamp, Packet pkt){
 
 	// Variables
 	double TCAMDelay = TCAM_SEARCH_DELAY;
-	double controlInDelay = CONTROL_IN_DELAY;
 	double forwardDelay;
 	int outputPort;
 	bool arrive;
@@ -34,7 +33,7 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	}
 	if(arrive){
 		evt.setTimeStamp(timeStamp);
-		evt.setEventType(EVENT_NOP);
+		evt.setEventType(EVENT_DONE);
 		printf("[%6.1lf] Packet %s arrives at destination.\n", timeStamp, pkt.getDstIP().fullIP.c_str());
 		return evt;
 	}
@@ -74,7 +73,7 @@ Event Switch::forward(double timeStamp, Packet pkt){
 			que.push_back(pkt);
 
 			// TCAM searching delay
-			evt.setTimeStamp(timeStamp + TCAMDelay + controlInDelay);
+			evt.setTimeStamp(timeStamp + TCAMDelay);
 			evt.setEventType(EVENT_FLOWSETUP);
 			evt.setPacket(pkt);
 			evt.setID(this->getID());

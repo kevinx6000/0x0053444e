@@ -4,6 +4,7 @@
 #include "../node/node.h"
 #include "../event/event.h"
 #include "../switch/switch.h"
+#include "../packet/packet.h"
 
 // Fat Tree class
 #ifndef FATTREE_H
@@ -45,6 +46,8 @@ class Fattree{
 		void cumulate(Event);			// Cumulate events until timeout
 		bool legalAddr(IP);				// Check if address is legal
 		bool alreadyInstall(Event);		// Check if flow setup is needed
-		vector<Entry> wired(int,Packet);	// Wired policy
+		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
+		bool wired(int,Packet,vector<Entry>&);	// Wired policy
+		void modifyCap(Packet,double);	// Modify capacity used along the path
 };
 #endif

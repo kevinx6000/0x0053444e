@@ -79,6 +79,11 @@ printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSe
 				}
 				break;
 
+			// Flow transmission done
+			case EVENT_DONE:
+				modifyCap(evt.getPacket(), +1);
+				break;
+
 			// Unknown
 			case EVENT_UNKNOWN:
 				fprintf(stderr, "Error: unknown operation found.\n");
