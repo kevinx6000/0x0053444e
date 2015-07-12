@@ -81,7 +81,7 @@ printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSe
 
 			// Flow transmission done
 			case EVENT_DONE:
-				releaseCap(evt.getPacket());
+				modifyCap(evt.getPacket(), +1);
 				break;
 
 			// Unknown

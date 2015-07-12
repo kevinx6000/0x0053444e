@@ -118,10 +118,14 @@ void Fattree::controller(Event ctrEvt){
 
 			// Record inserted entries
 			allEntry.push_back(vent);
+
+			// Consume Capacity
+			modifyCap(pkt, -1);
 		}
 
 		// No such path exists
 		else{
+			fprintf(stderr, "Error: %s to %s: ", pkt.getSrcIP().fullIP.c_str(), pkt.getDstIP().fullIP.c_str());
 			fprintf(stderr, "No such path exists.\n");
 			/* Here we may need to handle such situation */
 		}

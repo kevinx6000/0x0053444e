@@ -15,7 +15,7 @@ void Fattree::releaseCap(Packet pkt){
 		path.push_back(allEntry[flowID][i].getSID());
 
 	// DEBUG
-	printf("PATH DEBUG:\n");
+	printf("RELEASE PATH DEBUG:\n");
 	for(int i = 0; i < path.size(); i++)
 		printf(" %d", path[i]);
 	printf("\n");

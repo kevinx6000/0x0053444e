@@ -48,6 +48,6 @@ class Fattree{
 		bool alreadyInstall(Event);		// Check if flow setup is needed
 		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
 		bool wired(int,Packet,vector<Entry>&);	// Wired policy
-		void releaseCap(Packet);		// Release capacity
+		void modifyCap(Packet,double);	// Modify capacity used along the path
 };
 #endif

@@ -1,4 +1,4 @@
-all: constructor controller readInput install start rule getFunction wired legalAddr alreadyInstall cumulate pathInit releaseCap
+all: constructor controller readInput install start rule getFunction wired legalAddr alreadyInstall cumulate pathInit modifyCap
 
 constructor:
 	g++ -c constructor.cpp
@@ -36,5 +36,5 @@ cumulate:
 pathInit:
 	g++ -c pathInit.cpp
 
-releaseCap:
-	g++ -c releaseCap.cpp
+modifyCap:
+	g++ -c modifyCap.cpp
