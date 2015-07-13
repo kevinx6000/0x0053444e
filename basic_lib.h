@@ -4,6 +4,7 @@
 #include <cstring>
 #include <ctime>
 #include <cstdlib>
+#include <cmath>
 #include <queue>
 #include <vector>
 #include <string>
@@ -11,6 +12,7 @@
 #include "parameter.h"
 #define myMax(a,b) ((a)>(b)?(a):(b))
 #define myMin(a,b) ((a)<(b)?(a):(b))
+#define myDis(x1,y1,x2,y2) sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 using namespace std;
 typedef struct{
 	int id;

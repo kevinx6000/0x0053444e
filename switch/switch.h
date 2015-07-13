@@ -17,5 +17,6 @@ class Switch: public Node{
 		vector<Packet>que;
 		map<Packet,bool>isSetup;
 		double posXY[2];
+		vector<EDGE>wlink;
 };
 #endif
