@@ -131,6 +131,27 @@ Fattree::Fattree(int k){
 			etmp.id = src;
 			node[dst]->link.push_back(etmp);
 		}
+
+	// Temp positions
+	double x0, y0, x1, y1;
+
+	// Edge - Edge wireless links
+	etmp.cap = LINK_CAPACITY;
+	for(int i = 0; i < numberOfEdge; i++)
+		for(int j = i+1; j < numberOfEdge; j++){
+			src = numberOfCore + numberOfAggregate + i;
+			dst = numberOfCore + numberOfAggregate + j;
+			x0 = sw[src]->posXY[0];
+			y0 = sw[src]->posXY[1];
+			x1 = sw[dst]->posXY[0];
+			y1 = sw[dst]->posXY[1];
+			if(myDis(x0, y0, x1, y1) <= WIRELESS_RANGE){
+				etmp.id = dst;
+				sw[src]->wlink.push_back(etmp);
+				etmp.id = src;
+				sw[dst]->wlink.push_back(etmp);
+			}
+		}
 	
 	// Random seeds
 	srand((unsigned)time(NULL));
@@ -140,9 +161,4 @@ Fattree::Fattree(int k){
 	evt.setEventType(EVENT_INTERVAL);
 	evt.setTimeStamp(10.0);
 	eventQueue.push(evt);
-
-// DEBUG
-//for(int i = numberOfCore + numberOfAggregate; i < totalNode - numberOfHost; i++){
-//	printf("Switch %2d: %.2lf/%.2lf\n", sw[i]->getID(), sw[i]->posXY[0], sw[i]->posXY[1]);
-//}
 }

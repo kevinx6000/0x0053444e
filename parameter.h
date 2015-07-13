@@ -12,6 +12,7 @@
 
 /******** Link ********/
 #define LINK_CAPACITY 1e4
+#define WIRELESS_RANGE 10.0
 
 /******** Packet ********/
 #define PACKET_SIZE 4
