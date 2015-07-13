@@ -29,3 +29,6 @@ void Entry::setSID(int ss){
 void Entry::setRate(double rr){
 	this->rate = rr;
 }
+void Entry::isWireless(bool ff){
+	this->wireless = true;
+}

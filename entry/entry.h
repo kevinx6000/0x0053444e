@@ -22,6 +22,8 @@ class Entry{
 		int getPriority(void);
 		int getSID(void);
 		double getRate(void);
+		void isWireless(bool);
+		bool isWireless(void);
 	private:
 		int sid;
 		int srcMask[4];
@@ -29,5 +31,6 @@ class Entry{
 		int outputPort;
 		int priority;
 		double rate;
+		bool wireless;
 };
 #endif
