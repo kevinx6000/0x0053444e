@@ -153,6 +153,35 @@ Fattree::Fattree(int k){
 			}
 		}
 	
+	// Create interference lists of each wireless edge
+	vector<int>tlist;
+	for(int i = 0; i < numberOfEdge; i++){
+		src = numberOfCore + numberOfAggregate + i;
+		for(int j = 0; j < sw[src]->wlink.size(); j++){
+			dst = sw[src]->wlink[j].id;
+			for(int z = 0; z < numberOfEdge; z++){
+				now = numberOfCore + numberOfAggregate + z;
+				if(now == src || now == dst) continue;
+				if(vecdot(sw[src]->posXY, sw[dst]->posXY, sw[src]->posXY, sw[now]->posXY) > 0 &&
+					vecdot(sw[src]->posXY, sw[dst]->posXY, sw[now]->posXY, sw[dst]->posXY) > 0 &&
+					vecdis(sw[src]->posXY, sw[dst]->posXY, sw[src]->posXY, sw[now]->posXY) <= 11*inch)
+					tlist.push_back(now);
+			}
+			sw[src]->iList.push_back(tlist);
+			tlist.clear();
+		}
+	}
+
+// DEBUG
+src = numberOfCore + numberOfAggregate + 50;
+printf("[%3d]\n", src);
+for(int j = 0; j < sw[src]->iList.size(); j++){
+	printf("To %3d:", sw[src]->wlink[j].id);
+	for(int z = 0; z < sw[src]->iList[j].size(); z++)
+		printf(" %3d", sw[src]->iList[j][z]);
+	printf("\n");
+}
+
 	// Random seeds
 	srand((unsigned)time(NULL));
 
