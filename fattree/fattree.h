@@ -49,6 +49,7 @@ class Fattree{
 		void modifyCap(Packet,double);	// Modify capacity used along the path
 		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
 		bool wired(int,Packet,vector<Entry>&);	// Wired policy
-		double vecdis(double[],double[],double[]);	// Calculate vector distance
+		double vecdot(double[],double[],double[],double[]);	// Calculate vector dot
+		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
 };
 #endif

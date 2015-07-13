@@ -18,5 +18,6 @@ class Switch: public Node{
 		map<Packet,bool>isSetup;
 		double posXY[2];
 		vector<EDGE>wlink;
+		vector< vector<int> >iList;
 };
 #endif
