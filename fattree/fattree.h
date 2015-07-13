@@ -46,8 +46,9 @@ class Fattree{
 		void cumulate(Event);			// Cumulate events until timeout
 		bool legalAddr(IP);				// Check if address is legal
 		bool alreadyInstall(Event);		// Check if flow setup is needed
+		void modifyCap(Packet,double);	// Modify capacity used along the path
 		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
 		bool wired(int,Packet,vector<Entry>&);	// Wired policy
-		void modifyCap(Packet,double);	// Modify capacity used along the path
+		double vecdis(double[],double[],double[]);	// Calculate vector distance
 };
 #endif

@@ -152,7 +152,7 @@ Fattree::Fattree(int k){
 				sw[dst]->wlink.push_back(etmp);
 			}
 		}
-	
+
 	// Random seeds
 	srand((unsigned)time(NULL));
 
