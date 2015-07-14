@@ -10,6 +10,7 @@
 #include <string>
 #include <map>
 #include "parameter.h"
+#include "mypair.h"
 #define myAbs(x) ((x)>0?(x):(-(x)))
 #define myMax(a,b) ((a)>(b)?(a):(b))
 #define myMin(a,b) ((a)<(b)?(a):(b))
