@@ -11,6 +11,12 @@ void Fattree::modifyCap(Packet pkt, double chg){
 	int flowID = rcdFlowID[pkt];
 	double dataRate = pkt.getDataRate()*chg;
 
+	// Wireless policy
+	if(allEntry[flowID][0].isWireless()){
+		/* Recover original data rate here */
+		return;
+	}
+
 	// Source IP & ID
 	IP srcIP = pkt.getSrcIP();
 	int srcID = numberOfCore + numberOfAggregate + numberOfEdge +

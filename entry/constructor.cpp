@@ -18,4 +18,5 @@ Entry::Entry(int s0, int s1, int s2, int s3,
 	dstMask[3] = d3;
 	outputPort = out;
 	priority = pri;
+	wireless = false;
 }
