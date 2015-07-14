@@ -5,11 +5,15 @@
 void Fattree::wirelessSP(void){
 
 	// IDs
-	int srcID, dstID, nowID, nxtID;
+	int srcID, dstID, nowID;
+	double xx[2], yy[2];
 
-	// BFS
-	queue<int>BFS;
-	map<int,int>prev;
+	// A* BFS
+	int prev[pod*pod/2];
+	int sft = numberOfCore + numberOfAggregate;
+	priority_queue<myPair>pque;
+	myPair now, nxt;
+	memset(prev, 0, sizeof(prev));
 
 	// Paths
 	vector<int>rev;
@@ -26,29 +30,42 @@ void Fattree::wirelessSP(void){
 		// Self: empty path
 		this->wlPath[i].push_back(path);
 
-		// BFS
-		srcID = numberOfCore + numberOfAggregate + i;
-		BFS.push(srcID);
-		prev[srcID] = srcID;
-		while(!BFS.empty()){
-			nowID = BFS.front();
-			BFS.pop();
-			for(int j = 0; j < sw[nowID]->wlink.size(); j++){
-				nxtID = sw[nowID]->wlink[j].id;
-				if(!prev[nxtID]){
-					prev[nxtID] = nowID;
-					BFS.push(nxtID);
-				}
-			}
-		}
-
-		// All destination
+		// All pair destination
+		srcID = sft + i;
 		for(int j = i+1; j < numberOfEdge; j++){
-			dstID = numberOfCore + numberOfAggregate + j;
+			dstID = sft + j;
+			
+			// A* BFS
+			now.id = srcID;
+			now.hop = 0;
+			now.dis = 0.0;
+			prev[srcID-sft] = srcID;
+			pque.push(now);
+			while(!pque.empty()){
+				now = pque.top();
+				pque.pop();
+				for(int z = 0; z < sw[now.id]->wlink.size(); z++){
+					nxt.id = sw[now.id]->wlink[z].id;
+					if(!prev[nxt.id-sft]){
+						prev[nxt.id-sft] = now.id;
+						nxt.hop = now.hop+1;
+						xx[0] = sw[nxt.id]->posXY[0];
+						yy[0] = sw[nxt.id]->posXY[1];
+						xx[1] = sw[dstID]->posXY[0];
+						yy[1] = sw[dstID]->posXY[1];
+						nxt.dis = myDis(xx[0], yy[0], xx[1], yy[1]);
+						pque.push(nxt);
+					}
+					if(prev[dstID-sft]) break;
+				}
+				if(prev[dstID-sft]) break;
+			}
+
+			// Path
 			nowID = dstID;
 			while(nowID != srcID){
 				rev.push_back(nowID);
-				nowID = prev[nowID];
+				nowID = prev[nowID-sft];
 			}
 			rev.push_back(srcID);
 			for(int z = rev.size()-1; z >= 0; z--)
@@ -58,20 +75,19 @@ void Fattree::wirelessSP(void){
 			this->wlPath[i].push_back(path);
 			this->wlPath[j].push_back(rev);
 			
-			// Clear path
+			// Clear
 			path.clear();
 			rev.clear();
+			memset(prev, 0, sizeof(prev));
+			while(!pque.empty()) pque.pop();
 		}
-
-		// Clear prev
-		prev.clear();
 	}
 
 // DEBUG
 fprintf(stderr, "START DEBUGGING:\n");
 while(scanf("%d%d", &srcID, &dstID)==2){
-	srcID -= (numberOfCore + numberOfAggregate);
-	dstID -= (numberOfCore + numberOfAggregate);
+	srcID -= sft;
+	dstID -= sft;
 	if(!this->wlPath[srcID][dstID].size()) printf("Empty\n");
 	else{
 		for(int i = 0; i < this->wlPath[srcID][dstID].size(); i++)
