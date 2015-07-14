@@ -38,6 +38,7 @@ class Fattree{
 		vector< vector<Entry> > allEntry;	// Flow entries of some flows
 		vector< vector<Entry> > copyTCAM;	// TCAM at controller side
 		vector<Event>cumQue;			// Cumulated event queue
+		vector< vector< vector<int> > > wlPath;	// Wireless paths
 
 		// Private method
 		void controller(Event);			// Handles a batch of flow setup requests
@@ -51,5 +52,6 @@ class Fattree{
 		bool wired(int,Packet,vector<Entry>&);	// Wired policy
 		double vecdot(double[],double[],double[],double[]);	// Calculate vector dot
 		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
+		void wirelessSP(void);			// Pre-process wireless shortest path
 };
 #endif

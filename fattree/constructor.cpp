@@ -190,4 +190,7 @@ for(int j = 0; j < sw[src]->iList.size(); j++){
 	evt.setEventType(EVENT_INTERVAL);
 	evt.setTimeStamp(10.0);
 	eventQueue.push(evt);
+
+// DEBUG for wireless SP
+this->wirelessSP();
 }
