@@ -120,8 +120,7 @@ void Fattree::controller(Event ctrEvt){
 			allEntry.push_back(vent);
 
 			// Consume Capacity
-			fprintf(stderr, "(future work) Consume capacity for wireless\n");
-			/* This is future work */
+			modifyCap(pkt, -1);
 		}
 
 		// Wired policy

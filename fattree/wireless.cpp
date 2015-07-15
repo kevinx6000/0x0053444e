@@ -26,8 +26,16 @@ bool Fattree::wireless(int nid, Packet pkt, vector<Entry>& vent){
 	if(!wlPath[ss][tt].size()) return false;
 
 	// Check if capacity fit along the path
-	fprintf(stderr, "(future work) Check if capacity fit along the path\n");
-	/* This is future work */
+	bool fit = true;
+	double dataRate = pkt.getDataRate();
+	for(int i = 0; i < wlPath[ss][tt].size(); i++){
+		nowID = wlPath[ss][tt][i];
+		if(sw[nowID]->APrate < dataRate){
+			fit = false;
+			break;
+		}
+	}
+	if(!fit) return false;
 
 	// Create entries along these switches
 	int port;
