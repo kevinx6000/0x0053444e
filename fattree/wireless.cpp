@@ -28,11 +28,20 @@ bool Fattree::wireless(int nid, Packet pkt, vector<Entry>& vent){
 	// Check if capacity fit along the path
 	bool fit = true;
 	double dataRate = pkt.getDataRate();
-	for(int i = 0; i < wlPath[ss][tt].size(); i++){
+	int siz = wlPath[ss][tt].size();
+	for(int i = 0; i < siz; i++){
 		nowID = wlPath[ss][tt][i];
-		if(sw[nowID]->APrate < dataRate){
-			fit = false;
-			break;
+		if(!i || i==siz-1){
+			if(sw[nowID]->APrate < dataRate){
+				fit = false;
+				break;
+			}
+		}
+		else{
+			if(sw[nowID]->APrate < dataRate*2){
+				fit = false;
+				break;
+			}
 		}
 	}
 	if(!fit) return false;

@@ -23,12 +23,6 @@ void Fattree::modifyCap(Packet pkt, double chg){
 	IP dstIP = pkt.getDstIP();
 	int dstID = sft + dstIP.byte[1]*pod*pod/4 + dstIP.byte[2]*pod/2 + dstIP.byte[3]-2;
 
-	// Update data rate along the path
-	if(allEntry[flowID][0].isWireless()){
-		/* Remove this later */
-		return;
-	}
-
 	// Source & Destination links
 	node[srcID]->link[0].cap += dataRate;
 	node[ node[srcID]->link[0].id ]->link[ pod/2 + srcIP.byte[3]-2 ].cap += dataRate;
@@ -54,8 +48,9 @@ void Fattree::modifyCap(Packet pkt, double chg){
 
 			// Interference
 			port = allEntry[flowID][i].getOutputPort();
-			for(int j = 0; j < sw[nowID]->iList[port].size(); j++)
+			for(int j = 0; j < sw[nowID]->iList[port].size(); j++){
 				sw[ sw[nowID]->iList[port][j] ]->APrate += dataRate;
+			}
 		}
 		
 		// Wired
@@ -77,27 +72,4 @@ void Fattree::modifyCap(Packet pkt, double chg){
 			node[nxtID]->link[port].cap += dataRate;
 		}
 	}
-
-	// Get path
-	/*
-	vector<int>path;
-	path.push_back(srcID);
-	for(int i = 0; i < allEntry[flowID].size(); i++)
-		path.push_back(allEntry[flowID][i].getSID());
-	path.push_back(dstID);
-	
-	// For all links on the path
-	int port;
-	for(int i = 0; i < path.size()-1; i++){
-		// Forward
-		for(port = 0; port < node[path[i]]->link.size(); port++)
-			if(node[path[i]]->link[port].id == path[i+1]) break;
-		node[path[i]]->link[port].cap += dataRate;
-
-		// Reverse
-		for(port = 0; port < node[path[i+1]]->link.size(); port++)
-			if(node[path[i+1]]->link[port].id == path[i]) break;
-		node[path[i+1]]->link[port].cap += dataRate;
-	}
-	*/
 }

@@ -164,9 +164,9 @@ Fattree::Fattree(int k){
 			dst = sw[src]->wlink[j].id;
 			for(int z = 0; z < numberOfEdge; z++){
 				now = numberOfCore + numberOfAggregate + z;
-				if(now == src || now == dst) continue;
+				if(now == src) continue;
 				if(vecdot(sw[src]->posXY, sw[dst]->posXY, sw[src]->posXY, sw[now]->posXY) > 0 &&
-					vecdot(sw[src]->posXY, sw[dst]->posXY, sw[now]->posXY, sw[dst]->posXY) > 0 &&
+					vecdot(sw[src]->posXY, sw[dst]->posXY, sw[now]->posXY, sw[dst]->posXY) >= 0 &&
 					vecdis(sw[src]->posXY, sw[dst]->posXY, sw[src]->posXY, sw[now]->posXY) <= 11*inch)
 					tlist.push_back(now);
 			}

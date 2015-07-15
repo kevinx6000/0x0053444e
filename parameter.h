@@ -3,7 +3,7 @@
 #define PARAMETER_H
 
 /******** K *******/
-#define SIZE_OF_K 4
+#define SIZE_OF_K 18
 
 /******** Delays ********/
 #define TCAM_SEARCH_DELAY 0.5
