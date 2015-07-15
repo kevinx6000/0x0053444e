@@ -20,6 +20,12 @@ class Fattree{
 		int getNumberOfAggregate(void);	// Get number of aggregate switches
 		int getNumberOfEdge(void);		// Get number of edge switchs
 		int getNumberOfHost(void);		// Get number of hosts
+		int getNumberOfPod(void);		// Get number of Pods
+		Node **getNodePtr(void);		// Get node pointer
+
+		// Public data
+		vector< vector< vector<int> > > wlPath;	// Wireless paths
+
 	private:
 		// Private data
 		int pod;						// Number of pods
@@ -38,7 +44,6 @@ class Fattree{
 		vector< vector<Entry> > allEntry;	// Flow entries of some flows
 		vector< vector<Entry> > copyTCAM;	// TCAM at controller side
 		vector<Event>cumQue;			// Cumulated event queue
-		vector< vector< vector<int> > > wlPath;	// Wireless paths
 
 		// Private method
 		void controller(Event);			// Handles a batch of flow setup requests
@@ -54,5 +59,7 @@ class Fattree{
 		bool wireless(int,Packet,vector<Entry>&);	// Wireless policy
 		double vecdot(double[],double[],double[],double[]);	// Calculate vector dot
 		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
+
+		
 };
 #endif

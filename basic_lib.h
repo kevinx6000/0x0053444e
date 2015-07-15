@@ -8,6 +8,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <map>
 #include "parameter.h"
 #include "mypair.h"

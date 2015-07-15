@@ -27,3 +27,9 @@ int Fattree::getNumberOfEdge(void){
 int Fattree::getNumberOfHost(void){
 	return numberOfHost;
 }
+int Fattree::getNumberOfPod(void){
+	return pod;
+}
+Node **Fattree::getNodePtr(void){
+	return node;
+}

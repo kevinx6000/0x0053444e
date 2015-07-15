@@ -9,6 +9,7 @@
 #include "../fattree/fattree.h"
 #include "../event/event.h"
 #include "../event/eventType.h"
+#include "../mysort/mysort.h"
 
 // Controller
 void Fattree::controller(Event ctrEvt){
@@ -20,7 +21,6 @@ void Fattree::controller(Event ctrEvt){
 	double delay;
 	double flowSetupDelay = FLOW_SETUP_DELAY;
 	double computePathDelay = CONTROL_PATH_DELAY;
-	IP dstIP;
 	Event evt, ret;
 	Packet pkt;
 	Entry ent;
@@ -86,12 +86,16 @@ void Fattree::controller(Event ctrEvt){
 	}
 	cumQue.clear();
 
+	// Sort with the largest gap between wired & wireless
+	mySort msrt(this);
+	sort(flowSetupEvent.begin(), flowSetupEvent.end(), msrt);
+
 	// Currently, all flow setup apply wired policy
 	for(int j = 0; j < flowSetupEvent.size(); j++){
 		evt = flowSetupEvent[j];
 		nid = evt.getID();
 		pkt = evt.getPacket();
-
+	
 		// Assign flow ID
 		nowFlowID = flowIDCount ++;
 		rcdFlowID[pkt] = nowFlowID;
