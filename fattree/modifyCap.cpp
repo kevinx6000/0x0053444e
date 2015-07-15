@@ -14,6 +14,7 @@ void Fattree::modifyCap(Packet pkt, double chg){
 	// Wireless policy
 	if(allEntry[flowID][0].isWireless()){
 		/* Recover original data rate here */
+		fprintf(stderr, "(future work) Clear up capacity for wireless\n");
 		return;
 	}
 

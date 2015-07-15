@@ -82,17 +82,4 @@ void Fattree::wirelessSP(void){
 			while(!pque.empty()) pque.pop();
 		}
 	}
-
-// DEBUG
-fprintf(stderr, "START DEBUGGING:\n");
-while(scanf("%d%d", &srcID, &dstID)==2){
-	srcID -= sft;
-	dstID -= sft;
-	if(!this->wlPath[srcID][dstID].size()) printf("Empty\n");
-	else{
-		for(int i = 0; i < this->wlPath[srcID][dstID].size(); i++)
-			printf(" %d", this->wlPath[srcID][dstID][i]);
-		printf("\n");
-	}
-}
 }

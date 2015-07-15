@@ -127,6 +127,7 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 	Entry ent;
 	vector<int>revSeq;
 	if(prevNode[endID]!=-1){
+		vent.clear();
 		nowID = endID;
 		revSeq.push_back(endID);
 		while(nowID != srcID){

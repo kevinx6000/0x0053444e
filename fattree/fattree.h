@@ -48,10 +48,11 @@ class Fattree{
 		bool legalAddr(IP);				// Check if address is legal
 		bool alreadyInstall(Event);		// Check if flow setup is needed
 		void modifyCap(Packet,double);	// Modify capacity used along the path
+		void wirelessSP(void);			// Pre-process wireless shortest path
 		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
 		bool wired(int,Packet,vector<Entry>&);	// Wired policy
+		bool wireless(int,Packet,vector<Entry>&);	// Wireless policy
 		double vecdot(double[],double[],double[],double[]);	// Calculate vector dot
 		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
-		void wirelessSP(void);			// Pre-process wireless shortest path
 };
 #endif

@@ -172,16 +172,6 @@ Fattree::Fattree(int k){
 		}
 	}
 
-// DEBUG
-src = numberOfCore + numberOfAggregate + 50;
-printf("[%3d]\n", src);
-for(int j = 0; j < sw[src]->iList.size(); j++){
-	printf("To %3d:", sw[src]->wlink[j].id);
-	for(int z = 0; z < sw[src]->iList[j].size(); z++)
-		printf(" %3d", sw[src]->iList[j][z]);
-	printf("\n");
-}
-
 	// Random seeds
 	srand((unsigned)time(NULL));
 
@@ -191,6 +181,6 @@ for(int j = 0; j < sw[src]->iList.size(); j++){
 	evt.setTimeStamp(10.0);
 	eventQueue.push(evt);
 
-// DEBUG for wireless SP
-this->wirelessSP();
+	// Wireless Shortest Path
+	wirelessSP();
 }
