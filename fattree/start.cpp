@@ -29,31 +29,31 @@ void Fattree::start(void){
 
 			// No operation
 			case EVENT_NOP:
-printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
+				printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
 				break;
 
 			// Forwarding
 			case EVENT_FORWARD:
-printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+				printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				next = node[evt.getID()]->forward(evt.getTimeStamp(), evt.getPacket());
 				eventQueue.push(next);
 				break;
 
 			// Cumulate until interval timeout
 			case EVENT_FLOWSETUP:
-printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+				printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				cumulate(evt);
 				break;
 
 			// Interval timeout: handle batch of flow setup requests
 			case EVENT_INTERVAL:
-printf("[%6.1lf] Handle batch of request by controller.\n", evt.getTimeStamp());
+				printf("[%6.1lf] Handle batch of request by controller.\n", evt.getTimeStamp());
 				controller(evt);
 				break;
 
 			// Install & forward
 			case EVENT_INSTALL:
-printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+				printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				install(evt);
 
 				// Check the queue of corresponding switch
@@ -86,7 +86,7 @@ printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSe
 
 			// Unknown
 			case EVENT_UNKNOWN:
-				fprintf(stderr, "Error: unknown operation found.\n");
+				printf("Error: unknown operation found.\n");
 				break;
 		}
 	}

@@ -96,8 +96,36 @@ void Fattree::controller(Event ctrEvt){
 		nowFlowID = flowIDCount ++;
 		rcdFlowID[pkt] = nowFlowID;
 
+		// Wirless policy
+		if(wireless(nid, pkt, vent)){
+
+			// Install rule
+			for(int i = 0; i < vent.size(); i++){
+
+				// Switch side event
+				ret.setEventType(EVENT_INSTALL);
+				ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
+				ret.setID(vent[i].getSID());
+				ret.setPacket(pkt);
+				ret.setEntry(vent[i]);
+				eventQueue.push(ret);
+
+				// Controller side copy
+				if(copyTCAM[vent[i].getSID()].size() >= maxEntry)
+					copyTCAM[vent[i].getSID()].erase(copyTCAM[vent[i].getSID()].begin());
+				copyTCAM[vent[i].getSID()].push_back(vent[i]);
+			}
+			
+			// Record inserted entries
+			allEntry.push_back(vent);
+
+			// Consume Capacity
+			fprintf(stderr, "(future work) Consume capacity for wireless\n");
+			/* This is future work */
+		}
+
 		// Wired policy
-		if(wired(nid, pkt, vent)){
+		else if(wired(nid, pkt, vent)){
 
 			// Install rule
 			for(int i = 0; i < vent.size(); i++){
