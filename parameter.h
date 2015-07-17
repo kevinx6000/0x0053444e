@@ -16,4 +16,7 @@
 
 /******** Packet ********/
 #define PACKET_SIZE 4
+
+/******** TCAM ********/
+#define MAX_TCAM_ENTRY 2000
 #endif

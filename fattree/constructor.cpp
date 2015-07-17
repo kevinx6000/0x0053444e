@@ -16,7 +16,7 @@
 Fattree::Fattree(int k){
 
 	// TCAM entries
-	maxEntry = 100;
+	maxEntry = MAX_TCAM_ENTRY;
 
 	// Controller available time
 	compAvail = 0.0;
