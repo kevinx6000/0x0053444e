@@ -42,7 +42,6 @@ class Fattree{
 		priority_queue<Event>eventQueue;	// Event queue
 		map<Packet,int>rcdFlowID;			// Flow ID of a packet
 		vector< vector<Entry> > allEntry;	// Flow entries of some flows
-		vector< vector<Entry> > copyTCAM;	// TCAM at controller side
 		vector<Event>cumQue;			// Cumulated event queue
 
 		// Private method

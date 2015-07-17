@@ -45,12 +45,6 @@ void Fattree::controller(Event ctrEvt){
 				continue;
 			}
 
-			// The rule is already installed into switch earlier
-			else if(!alreadyInstall(evt)){
-				fprintf(stderr, "< Controller ignore the request >\n");
-				continue;
-			}
-
 			// Known flow, only install at this switch
 			else if(rcdFlowID[pkt]){
 
@@ -65,11 +59,6 @@ void Fattree::controller(Event ctrEvt){
 				ret.setPacket(pkt);
 				ret.setEntry(ent);
 				eventQueue.push(ret);
-
-				// Controller side copy
-				if(copyTCAM[nid].size() >= maxEntry)
-					copyTCAM[nid].erase(copyTCAM[nid].begin());
-				copyTCAM[nid].push_back(ent);
 			}
 
 			// Require to setup along the path
@@ -113,11 +102,6 @@ void Fattree::controller(Event ctrEvt){
 				ret.setPacket(pkt);
 				ret.setEntry(vent[i]);
 				eventQueue.push(ret);
-
-				// Controller side copy
-				if(copyTCAM[vent[i].getSID()].size() >= maxEntry)
-					copyTCAM[vent[i].getSID()].erase(copyTCAM[vent[i].getSID()].begin());
-				copyTCAM[vent[i].getSID()].push_back(vent[i]);
 			}
 			
 			// Record inserted entries
