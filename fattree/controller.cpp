@@ -18,6 +18,7 @@ void Fattree::controller(Event ctrEvt){
 	int nid;
 	int pathLen;
 	int nowFlowID;
+	int temp;
 	double delay;
 	double flowSetupDelay = FLOW_SETUP_DELAY;
 	double computePathDelay = CONTROL_PATH_DELAY;
@@ -90,7 +91,8 @@ void Fattree::controller(Event ctrEvt){
 		rcdFlowID[pkt] = nowFlowID;
 
 		// Wirless policy first, then wired policy
-		if(wireless(nid, pkt, vent) || wired(nid, pkt, vent)){
+		temp = ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay;
+		if(wireless(nid, pkt, vent, temp) || wired(nid, pkt, vent, temp)){
 
 			// Install rule
 			for(int i = 0; i < vent.size(); i++){

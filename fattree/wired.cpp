@@ -6,7 +6,7 @@
 #include "../IP/IP.h"
 
 // Wired policy
-bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
+bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 
 	// IP
 	IP srcIP = pkt.getSrcIP();
@@ -135,6 +135,7 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 			revSeq.push_back(nowID);
 		}
 		ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
+		ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
 		for(int i = revSeq.size()-1; i > 0; i--){
 			for(port = 0; port < node[revSeq[i]]->link.size(); port++)
 				if(node[revSeq[i]]->link[port].id == revSeq[i-1]) break;

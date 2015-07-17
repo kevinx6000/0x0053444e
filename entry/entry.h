@@ -18,12 +18,14 @@ class Entry{
 		void setPriority(int);
 		void setSID(int);
 		void setRate(double);
+		void setExpire(int);
 		int getOutputPort(void);
 		int getPriority(void);
 		int getSID(void);
 		double getRate(void);
 		void isWireless(bool);
 		bool isWireless(void);
+		bool isExpired(int);
 	private:
 		int sid;
 		int srcMask[4];
@@ -32,5 +34,6 @@ class Entry{
 		int priority;
 		double rate;
 		bool wireless;
+		int expireTime;
 };
 #endif

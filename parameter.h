@@ -19,4 +19,5 @@
 
 /******** TCAM ********/
 #define MAX_TCAM_ENTRY 2000
+#define ENTRY_EXPIRE_TIME 500
 #endif

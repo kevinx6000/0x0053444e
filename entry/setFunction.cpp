@@ -32,3 +32,6 @@ void Entry::setRate(double rr){
 void Entry::isWireless(bool ff){
 	this->wireless = ff;
 }
+void Entry::setExpire(int tt){
+	this->expireTime = tt;
+}
