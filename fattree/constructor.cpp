@@ -58,7 +58,6 @@ Fattree::Fattree(int k){
 		ip.setIP(10, pod, i/(pod/2)+1, i%(pod/2)+1);
 		sw[now]->setIP(ip);
 		node[now] = sw[now];
-		copyTCAM.push_back(vent);
 		now++;
 	}
 
@@ -68,7 +67,6 @@ Fattree::Fattree(int k){
 		ip.setIP(10, i/(pod/2), i%(pod/2)+(pod/2), 1);
 		sw[now]->setIP(ip);
 		node[now] = sw[now];
-		copyTCAM.push_back(vent);
 		now++;
 	}
 
@@ -78,7 +76,6 @@ Fattree::Fattree(int k){
 		ip.setIP(10, i/(pod/2), i%(pod/2), 1);
 		sw[now]->setIP(ip);
 		node[now] = sw[now];
-		copyTCAM.push_back(vent);
 
 		// Position X, Y
 		sw[now]->posXY[0] = (i%10)*widSw + 0.5*widSw + ((i/10)%4)*(10*feet+10*widSw);

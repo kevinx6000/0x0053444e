@@ -1,4 +1,4 @@
-all: constructor controller readInput install start rule getFunction wired legalAddr alreadyInstall cumulate pathInit modifyCap vecdot vecdis wirelessSP wireless
+all: constructor controller readInput install start rule getFunction wired legalAddr cumulate pathInit modifyCap vecdot vecdis wirelessSP wireless
 
 constructor:
 	g++ -c constructor.cpp
@@ -26,9 +26,6 @@ wired:
 
 legalAddr:
 	g++ -c legalAddr.cpp
-
-alreadyInstall:
-	g++ -c alreadyInstall.cpp
 
 cumulate:
 	g++ -c cumulate.cpp

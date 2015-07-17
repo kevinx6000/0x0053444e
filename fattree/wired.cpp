@@ -37,7 +37,7 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 		for(int i = 0; i < pod/2; i++){
 			if(node[nowID]->link[i].cap >= dataRate){
 				dstID = node[nowID]->link[i].id;
-				pathMin[dstID] = copyTCAM[nowID].size();
+				pathMin[dstID] = sw[nowID]->TCAM.size();
 				BFS.push(dstID);
 				prevNode[dstID] = nowID;
 			}
@@ -53,7 +53,7 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 			for(int j = 0; j < pod/2; j++){
 				if(node[nowID]->link[j].cap >= dataRate){
 					dstID = node[nowID]->link[j].id;
-					pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					pathMin[dstID] = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					BFS.push(dstID);
 					prevNode[dstID] = nowID;
 				}
@@ -71,20 +71,20 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 			if(node[nowID]->link[ dstIP.byte[1] ].cap >= dataRate){
 				dstID = node[nowID]->link[ dstIP.byte[1] ].id;
 				if(prevNode[dstID]==-1){
-					pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					pathMin[dstID] = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					prevNode[dstID] = nowID;
 					BFS.push(dstID);
-					siz = copyTCAM[nowID].size();
+					siz = sw[nowID]->TCAM.size();
 				}
 				else{
-					tmpMax = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					tmpMax = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					if(tmpMax < pathMin[dstID]){
 						pathMin[dstID] = tmpMax;
-						siz = copyTCAM[nowID].size();
+						siz = sw[nowID]->TCAM.size();
 						prevNode[dstID] = nowID;
 					}
-					else if(tmpMax == pathMin[dstID] && copyTCAM[nowID].size() < siz){
-						siz = copyTCAM[nowID].size();
+					else if(tmpMax == pathMin[dstID] && sw[nowID]->TCAM.size() < siz){
+						siz = sw[nowID]->TCAM.size();
 						prevNode[dstID] = nowID;
 					}
 				}
@@ -101,20 +101,20 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 			if(node[nowID]->link[ pod/2 + dstIP.byte[2] ].cap >= dataRate){
 				dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
 				if(prevNode[dstID]==-1){
-					pathMin[dstID] = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					pathMin[dstID] = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					prevNode[dstID] = nowID;
 					BFS.push(dstID);
-					siz = copyTCAM[nowID].size();
+					siz = sw[nowID]->TCAM.size();
 				}
 				else{
-					tmpMax = myMax(copyTCAM[nowID].size(), pathMin[nowID]);
+					tmpMax = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					if(tmpMax < pathMin[dstID]){
 						pathMin[dstID] = tmpMax;
-						siz = copyTCAM[nowID].size();
+						siz = sw[nowID]->TCAM.size();
 						prevNode[dstID] = nowID;
 					}
-					else if(tmpMax == pathMin[dstID] && copyTCAM[nowID].size() < siz){
-						siz = copyTCAM[nowID].size();
+					else if(tmpMax == pathMin[dstID] && sw[nowID]->TCAM.size() < siz){
+						siz = sw[nowID]->TCAM.size();
 						prevNode[dstID] = nowID;
 					}
 				}
