@@ -6,10 +6,13 @@
 #include "../packet/packet.h"
 
 // Extract rule
-Entry Fattree::rule(int nid, vector<Entry>flowEnt){
+bool Fattree::rule(int nid, vector<Entry>flowEnt, Entry &ent){
 
 	// Return corresponding rule to switch nid
 	for(int i = 0; i < flowEnt.size(); i++)
-		if(nid == flowEnt[i].getSID())
-			return flowEnt[i];
+		if(nid == flowEnt[i].getSID()){
+			ent = flowEnt[i];
+			return true;
+		}
+	return false;
 }

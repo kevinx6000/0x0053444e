@@ -28,6 +28,7 @@ Event Host::forward(double timeStamp, Packet pkt){
 	if(arrive){
 		evt.setTimeStamp(timeStamp);
 		evt.setEventType(EVENT_DONE);
+		evt.setPacket(pkt);
 		printf("[%6.1lf] Packet %d arrives at destination.\n", timeStamp, pkt.getSequence());
 		return evt;
 	}

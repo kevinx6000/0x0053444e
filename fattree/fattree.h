@@ -47,11 +47,11 @@ class Fattree{
 		// Private method
 		void controller(Event);			// Handles a batch of flow setup requests
 		void install(Event);			// Install rules into switch
-		Entry rule(int,vector<Entry>);	// Extract rule from flow path
 		void cumulate(Event);			// Cumulate events until timeout
 		bool legalAddr(IP);				// Check if address is legal
 		void modifyCap(Packet,double);	// Modify capacity used along the path
 		void wirelessSP(void);			// Pre-process wireless shortest path
+		bool rule(int,vector<Entry>,Entry&);	// Extract rule from flow path
 		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
 		bool wired(int,Packet,vector<Entry>&,int);		// Wired policy
 		bool wireless(int,Packet,vector<Entry>&,int);	// Wireless policy

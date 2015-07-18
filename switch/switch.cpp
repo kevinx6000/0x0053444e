@@ -34,6 +34,7 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	if(arrive){
 		evt.setTimeStamp(timeStamp);
 		evt.setEventType(EVENT_DONE);
+		evt.setPacket(pkt);
 		printf("[%6.1lf] Packet %s arrives at destination.\n", timeStamp, pkt.getDstIP().fullIP.c_str());
 		return evt;
 	}

@@ -46,20 +46,64 @@ void Fattree::controller(Event ctrEvt){
 				continue;
 			}
 
-			// Known flow, only install at this switch
+			// Known flow
 			else if(rcdFlowID[pkt]){
-
-				// Rule needed
 				nowFlowID = rcdFlowID[pkt];
-				ent = rule(nid, allEntry[nowFlowID]);
+				vent.clear();
 
-				// Switch side install rule
-				ret.setEventType(EVENT_INSTALL);
-				ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
-				ret.setID(nid);
-				ret.setPacket(pkt);
-				ret.setEntry(ent);
-				eventQueue.push(ret);
+				// Wireless policy or not at starting edge switch
+				if(allEntry[nowFlowID][0].isWireless() || nid != allEntry[nowFlowID][0].getSID() || !wireless(nid, pkt, vent, temp)){
+
+					// Rule needed
+					if(rule(nid, allEntry[nowFlowID], ent)){
+						ent.setExpire(ctrEvt.getTimeStamp() + flowSetupDelay + ENTRY_EXPIRE_TIME);
+
+						// Switch side install rule
+						ret.setEventType(EVENT_INSTALL);
+						ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
+						ret.setID(nid);
+						ret.setPacket(pkt);
+						ret.setEntry(ent);
+						eventQueue.push(ret);
+					}
+					// Rule not found
+					else{
+						/* This may cause by rule deletion of starting edge policy.*/
+						fprintf(stderr, "Rule extract failed!!!\n");
+					}
+				}
+
+				// Wired policy @ starting edge switch, and has wireless solution
+				else{
+
+					/* Remove entries along the path for this flowID */
+					for(int j = 0; j < allEntry[nowFlowID].size(); j++){
+						temp = allEntry[nowFlowID][j].getSID();
+						for(int k = 0; k < sw[temp]->TCAM.size(); k++)
+							if(sw[temp]->TCAM[k].isMatch(pkt)){
+								sw[temp]->TCAM.erase(sw[temp]->TCAM.begin()+k);
+								k--;
+							}
+					}
+
+					// Install rule
+					for(int j = 0; j < vent.size(); j++){
+
+						// Switch side event
+						ret.setEventType(EVENT_INSTALL);
+						ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
+						ret.setID(vent[j].getSID());
+						ret.setPacket(pkt);
+						ret.setEntry(vent[j]);
+						eventQueue.push(ret);
+					}
+
+					/* Update allEntry */
+					allEntry[nowFlowID] = vent;
+
+					// Consume Capacity
+					modifyCap(pkt, -1);	/* Install entries along the path for this flowID */
+				}
 			}
 
 			// Require to setup along the path
