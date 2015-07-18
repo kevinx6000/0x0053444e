@@ -34,6 +34,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 	if(srcIP.byte[1] != dstIP.byte[1] || srcIP.byte[2] != dstIP.byte[2]){
 		nowID = BFS.front();
 		BFS.pop();
+
+		// Remove expired entries
+		updateTCAM(nowID, timeStamp);
 		for(int i = 0; i < pod/2; i++){
 			if(node[nowID]->link[i].cap >= dataRate){
 				dstID = node[nowID]->link[i].id;
@@ -50,6 +53,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
+
+			// Remove expired entries
+			updateTCAM(nowID, timeStamp);
 			for(int j = 0; j < pod/2; j++){
 				if(node[nowID]->link[j].cap >= dataRate){
 					dstID = node[nowID]->link[j].id;
@@ -68,6 +74,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
+			
+			// Remove expired entries
+			updateTCAM(nowID, timeStamp);
 			if(node[nowID]->link[ dstIP.byte[1] ].cap >= dataRate){
 				dstID = node[nowID]->link[ dstIP.byte[1] ].id;
 				if(prevNode[dstID]==-1){
@@ -98,6 +107,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
+
+			// Remove expired entries
+			updateTCAM(nowID, timeStamp);
 			if(node[nowID]->link[ pod/2 + dstIP.byte[2] ].cap >= dataRate){
 				dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
 				if(prevNode[dstID]==-1){

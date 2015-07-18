@@ -50,7 +50,6 @@ class Fattree{
 		Entry rule(int,vector<Entry>);	// Extract rule from flow path
 		void cumulate(Event);			// Cumulate events until timeout
 		bool legalAddr(IP);				// Check if address is legal
-		bool alreadyInstall(Event);		// Check if flow setup is needed
 		void modifyCap(Packet,double);	// Modify capacity used along the path
 		void wirelessSP(void);			// Pre-process wireless shortest path
 		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
@@ -58,7 +57,6 @@ class Fattree{
 		bool wireless(int,Packet,vector<Entry>&,int);	// Wireless policy
 		double vecdot(double[],double[],double[],double[]);	// Calculate vector dot
 		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
-
-		
+		void updateTCAM(int,int);		// Remove expired entries
 };
 #endif
