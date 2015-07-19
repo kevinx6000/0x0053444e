@@ -34,19 +34,25 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	if(arrive){
 		evt.setTimeStamp(timeStamp);
 		evt.setEventType(EVENT_DONE);
+		evt.setPacket(pkt);
 		printf("[%6.1lf] Packet %s arrives at destination.\n", timeStamp, pkt.getDstIP().fullIP.c_str());
 		return evt;
 	}
 
 	// Search in TCAM
-	int pri = -1, pp;
+	int pri = -1, pp, rid;
 	Entry result;
 	for(int i = 0; i < TCAM.size(); i++){
-		if(TCAM[i].isMatch(pkt)){
+		if(TCAM[i].isExpired(timeStamp)){
+			TCAM.erase(TCAM.begin()+i);
+			i--;
+		}
+		else if(TCAM[i].isMatch(pkt)){
 			pp = TCAM[i].getPriority();
 			if(pp > pri){
 				pri = pp;
 				result = TCAM[i];
+				rid = i;
 			}
 		}
 	}
@@ -80,6 +86,11 @@ Event Switch::forward(double timeStamp, Packet pkt){
 			return evt;
 		}
 	}
+
+	// Update entry expire time, move to tail
+	result.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
+	TCAM.push_back(result);
+	TCAM.erase(TCAM.begin() + rid);
 
 	// Clear
 	isSetup[pkt] = false;

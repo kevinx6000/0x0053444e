@@ -1,4 +1,4 @@
-all: constructor controller readInput install start rule getFunction wired legalAddr cumulate pathInit modifyCap vecdot vecdis wirelessSP wireless
+all: constructor controller readInput install start rule getFunction wired legalAddr cumulate pathInit modifyCap vecdot vecdis wirelessSP wireless updateTCAM
 
 constructor:
 	g++ -c constructor.cpp
@@ -47,3 +47,6 @@ wirelessSP:
 
 wireless:
 	g++ -c wireless.cpp
+
+updateTCAM:
+	g++ -c updateTCAM.cpp

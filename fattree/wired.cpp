@@ -6,7 +6,7 @@
 #include "../IP/IP.h"
 
 // Wired policy
-bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
+bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 
 	// IP
 	IP srcIP = pkt.getSrcIP();
@@ -34,6 +34,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 	if(srcIP.byte[1] != dstIP.byte[1] || srcIP.byte[2] != dstIP.byte[2]){
 		nowID = BFS.front();
 		BFS.pop();
+
+		// Remove expired entries
+		updateTCAM(nowID, timeStamp);
 		for(int i = 0; i < pod/2; i++){
 			if(node[nowID]->link[i].cap >= dataRate){
 				dstID = node[nowID]->link[i].id;
@@ -50,6 +53,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
+
+			// Remove expired entries
+			updateTCAM(nowID, timeStamp);
 			for(int j = 0; j < pod/2; j++){
 				if(node[nowID]->link[j].cap >= dataRate){
 					dstID = node[nowID]->link[j].id;
@@ -68,6 +74,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
+			
+			// Remove expired entries
+			updateTCAM(nowID, timeStamp);
 			if(node[nowID]->link[ dstIP.byte[1] ].cap >= dataRate){
 				dstID = node[nowID]->link[ dstIP.byte[1] ].id;
 				if(prevNode[dstID]==-1){
@@ -98,6 +107,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 		for(int i = 0; i < queSiz; i++){
 			nowID = BFS.front();
 			BFS.pop();
+
+			// Remove expired entries
+			updateTCAM(nowID, timeStamp);
 			if(node[nowID]->link[ pod/2 + dstIP.byte[2] ].cap >= dataRate){
 				dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
 				if(prevNode[dstID]==-1){
@@ -135,6 +147,7 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent){
 			revSeq.push_back(nowID);
 		}
 		ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
+		ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
 		for(int i = revSeq.size()-1; i > 0; i--){
 			for(port = 0; port < node[revSeq[i]]->link.size(); port++)
 				if(node[revSeq[i]]->link[port].id == revSeq[i-1]) break;

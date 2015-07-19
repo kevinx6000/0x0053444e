@@ -29,7 +29,7 @@ void Fattree::modifyCap(Packet pkt, double chg){
 	node[dstID]->link[0].cap += dataRate;
 	node[ node[dstID]->link[0].id ]->link[ pod/2 + dstIP.byte[3]-2 ].cap += dataRate;
 	/* Warning: this depends on link creation order and IP naming policy */
-	
+
 	// Update along the path
 	int nowID, nxtID, port;
 	Entry ent;

@@ -6,7 +6,7 @@
 #include "../IP/IP.h"
 
 // Wireless policy
-bool Fattree::wireless(int nid, Packet pkt, vector<Entry>& vent){
+bool Fattree::wireless(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 
 	// IP
 	IP srcIP = pkt.getSrcIP();
@@ -51,6 +51,7 @@ bool Fattree::wireless(int nid, Packet pkt, vector<Entry>& vent){
 	Entry ent;
 	ent.isWireless(true);
 	ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
+	ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
 	vent.clear();
 	for(int i = 0; i < wlPath[ss][tt].size()-1; i++){
 		nowID = wlPath[ss][tt][i];

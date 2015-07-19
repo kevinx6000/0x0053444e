@@ -20,3 +20,6 @@ double Entry::getRate(void){
 bool Entry::isWireless(void){
 	return this->wireless;
 }
+bool Entry::isExpired(int curTime){
+	return this->expireTime <= curTime;
+}
