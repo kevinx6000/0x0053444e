@@ -5,6 +5,7 @@
 #include "../event/event.h"
 #include "../switch/switch.h"
 #include "../packet/packet.h"
+#include "../prevhop.h"
 
 // Fat Tree class
 #ifndef FATTREE_H
@@ -44,6 +45,8 @@ class Fattree{
 		vector< vector<Entry> > allEntry;	// Flow entries of some flows
 		vector<Event>cumQue;			// Cumulated event queue
 
+		map<int,PrevHop>prevHop;		// Previous hop
+
 		// Private method
 		void controller(Event);			// Handles a batch of flow setup requests
 		void install(Event);			// Install rules into switch
@@ -58,5 +61,8 @@ class Fattree{
 		double vecdot(double[],double[],double[],double[]);	// Calculate vector dot
 		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
 		void updateTCAM(int,int);		// Remove expired entries
+
+		void modCap(int,int,double);	// Release capacity of previous hop
+		void recrdPrev(Event,Event);	// Record previous hop information
 };
 #endif

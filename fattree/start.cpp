@@ -35,7 +35,27 @@ void Fattree::start(void){
 			// Forwarding
 			case EVENT_FORWARD:
 				printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+
+				// Release capacity of previous hop, and remove that record
+				modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate());
+				this->prevHop.erase(evt.getPacket().getSequence());
+
+				/* Check if some flow can forward now */
+				
+				// Try to forward
 				next = node[evt.getID()]->forward(evt.getTimeStamp(), evt.getPacket());
+				/* Here we have to check the capacity, and create QUEUE event if forward failed */
+
+				/* If this is an forwarding event, record previous switch/port and consume capacity */
+				if(next.getEventType() == EVENT_FORWARD){
+					recrdPrev(evt, next);
+					modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate()*(-1.0));
+				}
+				
+				/* If forwarding failed, queue and record switch/port/wired.wireless */
+				/* Create another event */
+
+				// Push into event queue
 				eventQueue.push(next);
 				break;
 
@@ -81,7 +101,7 @@ void Fattree::start(void){
 
 			// Flow transmission done
 			case EVENT_DONE:
-				modifyCap(evt.getPacket(), +1);
+				//modifyCap(evt.getPacket(), +1);
 				break;
 
 			// Unknown
