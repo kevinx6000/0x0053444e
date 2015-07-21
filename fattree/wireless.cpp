@@ -50,7 +50,11 @@ bool Fattree::wireless(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 	int port;
 	Entry ent;
 	ent.isWireless(true);
+	ent.setSrcMask(srcIP.byte[0], srcIP.byte[1], srcIP.byte[2], srcIP.byte[3]);
 	ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
+	ent.setSrcPort(pkt.getSrcPort());
+	ent.setDstPort(pkt.getDstPort());
+	ent.setProtocol(pkt.getProtocol());
 	ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
 	vent.clear();
 	for(int i = 0; i < wlPath[ss][tt].size()-1; i++){

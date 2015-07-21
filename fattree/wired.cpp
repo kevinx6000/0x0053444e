@@ -146,7 +146,11 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 			nowID = prevNode[nowID];
 			revSeq.push_back(nowID);
 		}
+		ent.setSrcMask(srcIP.byte[0], srcIP.byte[1], srcIP.byte[2], srcIP.byte[3]);
 		ent.setDstMask(dstIP.byte[0], dstIP.byte[1], dstIP.byte[2], dstIP.byte[3]);
+		ent.setSrcPort(pkt.getSrcPort());
+		ent.setDstPort(pkt.getDstPort());
+		ent.setProtocol(pkt.getProtocol());
 		ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
 		for(int i = revSeq.size()-1; i > 0; i--){
 			for(port = 0; port < node[revSeq[i]]->link.size(); port++)

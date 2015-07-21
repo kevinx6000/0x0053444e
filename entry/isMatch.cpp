@@ -26,6 +26,13 @@ bool Entry::isMatch(Packet pkt){
 			ok=false;
 			break;
 		}
+	
+	// Source/Destination port
+	if(srcPort != -1 && srcPort != pkt.getSrcPort()) ok = false;
+	if(dstPort != -1 && dstPort != pkt.getDstPort()) ok = false;
+
+	// Protocol
+	if(protocol != -1 && protocol != pkt.getProtocol()) ok = false;
 
 	// Matching result
 	return ok;
