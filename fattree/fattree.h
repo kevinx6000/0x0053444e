@@ -52,7 +52,6 @@ class Fattree{
 		void install(Event);			// Install rules into switch
 		void cumulate(Event);			// Cumulate events until timeout
 		bool legalAddr(IP);				// Check if address is legal
-		void modifyCap(Packet,double);	// Modify capacity used along the path
 		void wirelessSP(void);			// Pre-process wireless shortest path
 		bool rule(int,vector<Entry>,Entry&);	// Extract rule from flow path
 		int pathInit(Packet,map<int,int>&);		// Initialize the prev array with -1
@@ -62,7 +61,9 @@ class Fattree{
 		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
 		void updateTCAM(int,int);		// Remove expired entries
 
-		void modCap(int,int,double);	// Release capacity of previous hop
 		void recrdPrev(Event,Event);	// Record previous hop information
+		void modCap(int,int,double);	// Release capacity of previous hop
+		bool blockFlow(Event,Event);	// Check if capacity is enough or not
+		void resumeFlow(int,int);		// Resume blocked flow
 };
 #endif

@@ -18,6 +18,9 @@ void Fattree::start(void){
 	int sid, siz;
 	double ts;
 	Event evt, next;
+	PrevHop ph;
+	map<int,PrevHop>::iterator itr;
+	pair<Event,Event>pr;
 	while(!eventQueue.empty()){
 	
 		// Get current event
@@ -36,24 +39,44 @@ void Fattree::start(void){
 			case EVENT_FORWARD:
 				printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 
-				// Release capacity of previous hop, and remove that record
-				modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate());
-				this->prevHop.erase(evt.getPacket().getSequence());
+				// Has previous hop record
+				itr = this->prevHop.find(evt.getPacket().getSequence());
+				if(itr != this->prevHop.end()){
 
-				/* Check if some flow can forward now */
-				
+					// Release capacity
+					modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate());
+					ph = itr->second;
+
+					// Check blocked flows
+					resumeFlow(ph.id, evt.getTimeStamp());
+
+					// Remove that record
+					this->prevHop.erase(itr);
+				}
+
 				// Try to forward
 				next = node[evt.getID()]->forward(evt.getTimeStamp(), evt.getPacket());
-				/* Here we have to check the capacity, and create QUEUE event if forward failed */
 
-				/* If this is an forwarding event, record previous switch/port and consume capacity */
+				// Forward event
 				if(next.getEventType() == EVENT_FORWARD){
-					recrdPrev(evt, next);
-					modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate()*(-1.0));
+
+					// Blocked
+					if(blockFlow(evt, next)){
+
+						// Store into queue
+						printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+						pr.first = evt;
+						pr.second = next;
+						node[evt.getID()]->blockEvt.push_back(pr);
+						break;
+					}
+	
+					else{
+						// Record previous hop and consume capacity
+						recrdPrev(evt, next);
+						modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate()*(-1.0));
+					}
 				}
-				
-				/* If forwarding failed, queue and record switch/port/wired.wireless */
-				/* Create another event */
 
 				// Push into event queue
 				eventQueue.push(next);

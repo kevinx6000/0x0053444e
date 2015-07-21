@@ -16,9 +16,9 @@ void Fattree::recrdPrev(Event preEvt, Event nowEvt){
 	// Wired
 	int port;
 	int nowID = nowEvt.getID();
-	for(port = 0; port < sw[preID]->link.size(); port++)
-		if(sw[preID]->link[port].id == nowID) break;
-	if(port < sw[preID]->link.size()){
+	for(port = 0; port < node[preID]->link.size(); port++)
+		if(node[preID]->link[port].id == nowID) break;
+	if(port < node[preID]->link.size()){
 		this->prevHop[seq].port = port;
 		this->prevHop[seq].tranType = PREV_WIRED;
 	}

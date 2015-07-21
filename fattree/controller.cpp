@@ -100,9 +100,6 @@ void Fattree::controller(Event ctrEvt){
 
 					/* Update allEntry */
 					allEntry[nowFlowID] = vent;
-
-					// Consume Capacity
-					//modifyCap(pkt, -1);	/* Install entries along the path for this flowID */
 				}
 			}
 
@@ -152,9 +149,6 @@ void Fattree::controller(Event ctrEvt){
 			
 			// Record inserted entries
 			allEntry.push_back(vent);
-
-			// Consume Capacity
-			//modifyCap(pkt, -1);
 		}
 
 		// No such path exists

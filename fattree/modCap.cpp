@@ -16,17 +16,22 @@ void Fattree::modCap(int nid, int seq, double rate){
 	// Wired
 	int port, nxt;
 	if(pp.tranType == PREV_WIRED){
-		sw[pp.id]->link[pp.port].cap += rate;
-		nxt = sw[pp.id]->link[pp.port].id;
-		for(port = 0; port < sw[nxt]->link.size(); port++)
-			if(sw[nxt]->link[port].id == pp.id) break;
-		sw[nxt]->link[port].cap += rate;
+		node[pp.id]->link[pp.port].cap += rate;
+		nxt = node[pp.id]->link[pp.port].id;
+		for(port = 0; port < node[nxt]->link.size(); port++)
+			if(node[nxt]->link[port].id == pp.id) break;
+		node[nxt]->link[port].cap += rate;
 	}
 
 	// Wireless
 	else if(pp.tranType == PREV_WIRELESS){
 		sw[pp.id]->APrate += rate;
 		sw[ sw[pp.id]->wlink[pp.port].id ]->APrate += rate;
+
+		// Interference
+		for(int j = 0; j < sw[pp.id]->iList[pp.port].size(); j++){
+			sw[ sw[pp.id]->iList[pp.port][j] ]->APrate += rate;
+		}
 	}
 
 	// WTF??
