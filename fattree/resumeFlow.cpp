@@ -32,7 +32,6 @@ void Fattree::resumeFlow(int nid, int timeStamp){
 			// Record previous hop and consume capacity
 			recrdPrev(nowEvt, nxtEvt);
 			modCap(nowEvt.getID(), nowEvt.getPacket().getSequence(), nowEvt.getPacket().getDataRate()*(-1.0));
-printf("Re-forward %d success.\n", nowEvt.getPacket().getSequence());
 
 			// Remove block flow
 			node[nid]->blockEvt.erase( node[nid]->blockEvt.begin() + i);

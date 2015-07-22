@@ -15,14 +15,16 @@
 void Fattree::start(void){
 
 	// Until all event finished
-	int sid, siz, arrive;
+	int sid, siz, arrive, totFlow;
 	double ts;
 	Event evt, next;
 	PrevHop ph;
 	map<int,PrevHop>::iterator itr;
 	pair<Event,Event>pr;
 
+	int prevPerCent = -1, perCent;
 	arrive = 0;
+	totFlow = ((int)eventQueue.size()) - 1;
 	while(!eventQueue.empty()){
 
 		// Get current event
@@ -34,12 +36,12 @@ void Fattree::start(void){
 
 			// No operation
 			case EVENT_NOP:
-				printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
+//printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
 				break;
 
 			// Forwarding
 			case EVENT_FORWARD:
-				printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 
 				// Has previous hop record
 				itr = this->prevHop.find(evt.getPacket().getSequence());
@@ -66,7 +68,7 @@ void Fattree::start(void){
 					if(blockFlow(evt, next)){
 
 						// Store into queue
-						printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 						pr.first = evt;
 						pr.second = next;
 						node[evt.getID()]->blockEvt.push_back(pr);
@@ -86,7 +88,7 @@ void Fattree::start(void){
 
 			// Cumulate until interval timeout
 			case EVENT_FLOWSETUP:
-				printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				cumulate(evt);
 				break;
 
@@ -97,7 +99,7 @@ void Fattree::start(void){
 
 			// Install & forward
 			case EVENT_INSTALL:
-				printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				install(evt);
 
 				// Check the queue of corresponding switch
@@ -126,7 +128,12 @@ void Fattree::start(void){
 			// Flow transmission done
 			case EVENT_DONE:
 				arrive ++;
-				printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
+				perCent = (arrive*100)/totFlow;
+				if(perCent != prevPerCent){
+					printf("%3d%% (%d/%d) done.\n", perCent, arrive, totFlow);
+					prevPerCent = perCent;
+				}
+//printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
 				break;
 
 			// Unknown
