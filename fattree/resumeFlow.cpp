@@ -25,7 +25,7 @@ void Fattree::resumeFlow(int nid, int timeStamp){
 			pkt = nxtEvt.getPacket();
 
 			// Pass, update time stamp of event
-			forwardDelay = pkt.getNumPkt()*PACKET_SIZE / pkt.getDataRate();
+			forwardDelay = pkt.getFlowSize() / pkt.getDataRate();
 			nxtEvt.setTimeStamp(timeStamp + forwardDelay);
 			eventQueue.push(nxtEvt);
 

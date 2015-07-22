@@ -90,7 +90,6 @@ void Fattree::start(void){
 
 			// Interval timeout: handle batch of flow setup requests
 			case EVENT_INTERVAL:
-				printf("[%6.1lf] Handle batch of request by controller.\n", evt.getTimeStamp());
 				controller(evt);
 				break;
 

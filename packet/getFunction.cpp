@@ -21,8 +21,8 @@ unsigned int Packet::getProtocol(void){
 int Packet::getSequence(void){
 	return seq;
 }
-unsigned int Packet::getNumPkt(void){
-	return numPkt;
+unsigned int Packet::getFlowSize(void){
+	return flowSize;
 }
 double Packet::getDataRate(void){
 	return dataRate;

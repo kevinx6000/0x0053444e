@@ -18,7 +18,7 @@ class Packet{
 		void setDstPort(unsigned int);
 		void setProtocol(unsigned int);
 		void setSequence(int);
-		void setNumPkt(unsigned int);
+		void setFlowSize(unsigned int);
 		void setDataRate(double);
 
 		// Get function
@@ -28,7 +28,7 @@ class Packet{
 		unsigned int getDstPort(void);
 		unsigned int getProtocol(void);
 		int getSequence(void);
-		unsigned int getNumPkt(void);
+		unsigned int getFlowSize(void);
 		double getDataRate(void);
 
 		// Comparator function
@@ -43,7 +43,7 @@ class Packet{
 		int seq;
 
 		// Flow info
-		unsigned int numPkt;
+		unsigned int flowSize;
 		double dataRate;
 };
 #endif

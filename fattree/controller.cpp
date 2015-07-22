@@ -27,6 +27,7 @@ void Fattree::controller(Event ctrEvt){
 	Entry ent;
 	vector<Event>flowSetupEvent;
 	vector<Entry>vent;
+	bool hasHandle = false;
 
 	// Classify events
 	for(int i = 0; i < cumQue.size(); i++){
@@ -115,6 +116,7 @@ void Fattree::controller(Event ctrEvt){
 			eventQueue.push(ret);
 		}
 	}
+	if(((int)cumQue.size()) > 0) hasHandle = true;
 	cumQue.clear();
 
 	// Sort with the largest gap between wired & wireless
@@ -165,10 +167,13 @@ void Fattree::controller(Event ctrEvt){
 	// DEBUG: if no event handled, stop
 	if(!eventQueue.size()) return;
 
+	// DEBUG log
+	if(hasHandle) printf("[%6.1lf] Controller: Waiting for next handl...\n", ctrEvt.getTimeStamp());
+
 	// The next timeout time
 	evt = ctrEvt;
 	evt.setEventType(EVENT_INTERVAL);
-	evt.setTimeStamp(evt.getTimeStamp()+10.0);
-	eventQueue.push(evt);	
+	evt.setTimeStamp(evt.getTimeStamp()+CONTROL_BATCH);
+	eventQueue.push(evt);
 	return;
 }

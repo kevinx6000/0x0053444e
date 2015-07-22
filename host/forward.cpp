@@ -34,7 +34,7 @@ Event Host::forward(double timeStamp, Packet pkt){
 	}
 	
 	// Forward to switch
-	forwardDelay = pkt.getNumPkt()*PACKET_SIZE / pkt.getDataRate();
+	forwardDelay = pkt.getFlowSize() / pkt.getDataRate();
 	evt.setTimeStamp(timeStamp + forwardDelay);
 	evt.setEventType(EVENT_FORWARD);
 	evt.setID(link[0].id);

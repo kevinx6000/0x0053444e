@@ -178,7 +178,7 @@ Fattree::Fattree(int k){
 	// Controller interval timeout event
 	Event evt;
 	evt.setEventType(EVENT_INTERVAL);
-	evt.setTimeStamp(10.0);
+	evt.setTimeStamp(CONTROL_BATCH);
 	eventQueue.push(evt);
 
 	// Wireless Shortest Path

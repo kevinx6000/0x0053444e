@@ -6,18 +6,16 @@
 #define SIZE_OF_K 18
 
 /******** Delays ********/
-#define TCAM_SEARCH_DELAY 0.5
-#define FLOW_SETUP_DELAY 2.5
-#define CONTROL_PATH_DELAY 1.0
+#define TCAM_SEARCH_DELAY 28.5
+#define FLOW_SETUP_DELAY 1
+#define CONTROL_BATCH 500
+#define CONTROL_PATH_DELAY 0
 
 /******** Link ********/
-#define LINK_CAPACITY 1e4
+#define LINK_CAPACITY 125.0
 #define WIRELESS_RANGE 10.0
 
-/******** Packet ********/
-#define PACKET_SIZE 4
-
 /******** TCAM ********/
-#define MAX_TCAM_ENTRY 2000
-#define ENTRY_EXPIRE_TIME 500
+#define MAX_TCAM_ENTRY 2800
+#define ENTRY_EXPIRE_TIME 1e7
 #endif
