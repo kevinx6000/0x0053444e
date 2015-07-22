@@ -15,14 +15,16 @@
 void Fattree::start(void){
 
 	// Until all event finished
-	int sid, siz;
+	int sid, siz, arrive;
 	double ts;
 	Event evt, next;
 	PrevHop ph;
 	map<int,PrevHop>::iterator itr;
 	pair<Event,Event>pr;
+
+	arrive = 0;
 	while(!eventQueue.empty()){
-	
+
 		// Get current event
 		evt = eventQueue.top();
 		eventQueue.pop();
@@ -123,7 +125,8 @@ void Fattree::start(void){
 
 			// Flow transmission done
 			case EVENT_DONE:
-				//modifyCap(evt.getPacket(), +1);
+				arrive ++;
+				printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
 				break;
 
 			// Unknown

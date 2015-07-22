@@ -168,7 +168,7 @@ void Fattree::controller(Event ctrEvt){
 	if(!eventQueue.size()) return;
 
 	// DEBUG log
-	if(hasHandle) printf("[%6.1lf] Controller: Waiting for next handl...\n", ctrEvt.getTimeStamp());
+	if(hasHandle) printf("[%6.1lf] Controller: Waiting for next handle...\n", ctrEvt.getTimeStamp());
 
 	// The next timeout time
 	evt = ctrEvt;
