@@ -78,8 +78,8 @@ Fattree::Fattree(int k){
 		node[now] = sw[now];
 
 		// Position X, Y
-		sw[now]->posXY[0] = (i%10)*widSw + 0.5*widSw + ((i/10)%4)*(10*feet+10*widSw);
-		sw[now]->posXY[1] = 0.5*lenSw + (i/40)*(lenSw+8*feet);
+		sw[now]->posXY[0] = (i%(k/2))*widSw + 0.5*widSw + ((i/(k/2))%4)*(10*feet+(k/2)*widSw);
+		sw[now]->posXY[1] = 0.5*lenSw + (i/(k*4/2))*(lenSw+8*feet);
 		
 		// AP data rate
 		sw[now]->APrate = LINK_CAPACITY;
