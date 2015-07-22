@@ -16,27 +16,14 @@ bool Fattree::blockFlow(Event preEvt, Event nowEvt){
 
 	// Switch
 	else{
-		// Edge to Edge: wireless
-		if(preEvt.getID() >= numberOfCore + numberOfAggregate && 
-				nowEvt.getID() >= numberOfCore + numberOfAggregate &&
-				nowEvt.getID() < numberOfCore + numberOfAggregate + numberOfEdge){
-			if(sw[preEvt.getID()]->APrate < preEvt.getPacket().getDataRate() || 
-					sw[nowEvt.getID()]->APrate < preEvt.getPacket().getDataRate()){
-				return true;
-			}
-		}
-
-		// Wired
-		else{
-			for(port = 0; port < node[preEvt.getID()]->link.size(); port++)
-				if(node[preEvt.getID()]->link[port].id == nowEvt.getID()) break;
-			if(node[preEvt.getID()]->link[port].cap < preEvt.getPacket().getDataRate())
-				return true;
-			for(port = 0; port < node[nowEvt.getID()]->link.size(); port++)
-				if(node[nowEvt.getID()]->link[port].id == preEvt.getID()) break;
-			if(node[nowEvt.getID()]->link[port].cap < preEvt.getPacket().getDataRate())
-				return true;
-		}
+		for(port = 0; port < node[preEvt.getID()]->link.size(); port++)
+			if(node[preEvt.getID()]->link[port].id == nowEvt.getID()) break;
+		if(node[preEvt.getID()]->link[port].cap < preEvt.getPacket().getDataRate())
+			return true;
+		for(port = 0; port < node[nowEvt.getID()]->link.size(); port++)
+			if(node[nowEvt.getID()]->link[port].id == preEvt.getID()) break;
+		if(node[nowEvt.getID()]->link[port].cap < preEvt.getPacket().getDataRate())
+			return true;
 	}
 
 	// Pass

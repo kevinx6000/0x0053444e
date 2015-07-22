@@ -105,11 +105,8 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	evt.setEventType(EVENT_FORWARD);
 	evt.setPacket(pkt);
 
-	// Wired/Wireless
-	if(result.isWireless())
-		evt.setID(wlink[result.getOutputPort()].id);
-	else
-		evt.setID(link[result.getOutputPort()].id);
+	// Wired only
+	evt.setID(link[result.getOutputPort()].id);
 
 	// Return event
 	return evt;

@@ -23,17 +23,6 @@ void Fattree::modCap(int nid, int seq, double rate){
 		node[nxt]->link[port].cap += rate;
 	}
 
-	// Wireless
-	else if(pp.tranType == PREV_WIRELESS){
-		sw[pp.id]->APrate += rate;
-		sw[ sw[pp.id]->wlink[pp.port].id ]->APrate += rate;
-
-		// Interference
-		for(int j = 0; j < sw[pp.id]->iList[pp.port].size(); j++){
-			sw[ sw[pp.id]->iList[pp.port][j] ]->APrate += rate;
-		}
-	}
-
 	// WTF??
 	else{
 		fprintf(stderr, "(Error) Unknown previous hop link type\n");

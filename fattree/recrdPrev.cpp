@@ -23,11 +23,8 @@ void Fattree::recrdPrev(Event preEvt, Event nowEvt){
 		this->prevHop[seq].tranType = PREV_WIRED;
 	}
 
-	// Wireless
+	// Wireless <- no wireless here!!!
 	else{
-		for(port = 0; port < sw[preID]->wlink.size(); port++)
-			if(sw[preID]->wlink[port].id == nowID) break;
-		this->prevHop[seq].port = port;
-		this->prevHop[seq].tranType = PREV_WIRELESS;
+fprintf(stderr, "WTF???\n");
 	}
 }
