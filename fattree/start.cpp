@@ -90,6 +90,7 @@ void Fattree::start(void){
 			case EVENT_FLOWSETUP:
 //printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				cumulate(evt);
+				metric_flowSetupRequest ++;
 				break;
 
 			// Interval timeout: handle batch of flow setup requests
@@ -101,6 +102,7 @@ void Fattree::start(void){
 			case EVENT_INSTALL:
 //printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				install(evt);
+				metric_ruleInstallCount ++;
 
 				// Check the queue of corresponding switch
 				sid = evt.getID();
@@ -127,13 +129,26 @@ void Fattree::start(void){
 
 			// Flow transmission done
 			case EVENT_DONE:
+//printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
+
+				// Percentage
 				arrive ++;
 				perCent = (arrive*100)/totFlow;
 				if(perCent != prevPerCent){
 					printf("%3d%% (%d/%d) done.\n", perCent, arrive, totFlow);
 					prevPerCent = perCent;
 				}
-//printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
+	
+				// Flow arrival time
+				metric_avgFlowCompleteTime += (evt.getTimeStamp() - metric_flowArrivalTime[evt.getPacket().getSequence()]);
+				metric_flowArrivalTime.erase(evt.getPacket().getSequence());
+
+				// Output metric
+				if(perCent == 100){
+					printf("# of flow setup request: %d\n", metric_flowSetupRequest);
+					printf("# of installed rules: %d\n", metric_ruleInstallCount);
+					printf("Avg. flow completion time: %.3lf\n", metric_avgFlowCompleteTime/totFlow);
+				}
 				break;
 
 			// Unknown

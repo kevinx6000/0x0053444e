@@ -183,4 +183,9 @@ Fattree::Fattree(int k){
 
 	// Wireless Shortest Path
 	wirelessSP();
+
+	// Initialize metric
+	metric_flowSetupRequest = 0;
+	metric_ruleInstallCount = 0;
+	metric_avgFlowCompleteTime = 0.0;
 }
