@@ -44,7 +44,6 @@ class Fattree{
 		map<Packet,int>rcdFlowID;			// Flow ID of a packet
 		vector< vector<Entry> > allEntry;	// Flow entries of some flows
 		vector<Event>cumQue;			// Cumulated event queue
-
 		map<int,PrevHop>prevHop;		// Previous hop
 
 		// Private method
@@ -60,10 +59,15 @@ class Fattree{
 		double vecdot(double[],double[],double[],double[]);	// Calculate vector dot
 		double vecdis(double[],double[],double[],double[]);	// Calculate vector distance
 		void updateTCAM(int,int);		// Remove expired entries
-
 		void recrdPrev(Event,Event);	// Record previous hop information
 		void modCap(int,int,double);	// Release capacity of previous hop
 		bool blockFlow(Event,Event);	// Check if capacity is enough or not
 		void resumeFlow(int,int);		// Resume blocked flow
+
+		// Metric
+		int metric_flowSetupRequest;
+		int metric_ruleInstallCount;
+		double metric_avgFlowCompleteTime;
+		map<int,double>metric_flowArrivalTime;
 };
 #endif

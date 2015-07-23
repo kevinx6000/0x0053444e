@@ -46,5 +46,8 @@ void Fattree::readInput(void){
 		evt.setID(numberOfCore + numberOfAggregate + numberOfEdge + 
 					srcIP.byte[1]*pod*pod/4 + srcIP.byte[2]*pod/2 + srcIP.byte[3]-2);
 		eventQueue.push(evt);
+
+		// Record flow arrival time
+		metric_flowArrivalTime[seq-1] = timeStamp;
 	}
 }
