@@ -21,6 +21,13 @@ void Fattree::install(Event evt){
 	Packet pkt = evt.getPacket();
 	Event ret;
 
+	// Remove the entries of the same flow ID
+	for(int i = 0; i < sw[nid]->TCAM.size(); i++)
+		if(sw[nid]->TCAM[i].isMatch(pkt)){
+			sw[nid]->TCAM.erase(sw[nid]->TCAM.begin() + i);
+			i--;
+		}
+
 	// Remove if full
 	if(sw[nid]->TCAM.size() >= maxEntry)
 		sw[nid]->TCAM.erase(sw[nid]->TCAM.begin());
