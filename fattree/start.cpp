@@ -22,9 +22,15 @@ void Fattree::start(void){
 	map<int,PrevHop>::iterator itr;
 	pair<Event,Event>pr;
 
+	// Statistic information
 	int prevPerCent = -1, perCent;
+	int numberOfWiredFlow = 0;
+	int numberOfWirelessFlow = 0;
+	int nowFlowID;
 	arrive = 0;
 	totFlow = ((int)eventQueue.size()) - 1;
+
+	// Event queue
 	while(!eventQueue.empty()){
 
 		// Get current event
@@ -64,6 +70,16 @@ void Fattree::start(void){
 				// Forward event
 				if(next.getEventType() == EVENT_FORWARD){
 
+					// Record number of flow for statistic info
+					/* At starting edge only */
+					if(evt.getID() < numberOfCore + numberOfAggregate + numberOfEdge){
+						nowFlowID = rcdFlowID[evt.getPacket()];
+						if(evt.getID() == allEntry[nowFlowID][0].getSID()){
+							if(allEntry[nowFlowID][0].isWireless()) numberOfWirelessFlow ++;
+							else numberOfWiredFlow ++;
+						}
+					}
+
 					// Blocked
 					if(blockFlow(evt, next)){
 
@@ -76,6 +92,7 @@ void Fattree::start(void){
 					}
 	
 					else{
+
 						// Record previous hop and consume capacity
 						recrdPrev(evt, next);
 						modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate()*(-1.0));
@@ -148,6 +165,7 @@ void Fattree::start(void){
 					printf("# of flow setup request: %d\n", metric_flowSetupRequest);
 					printf("# of installed rules: %d\n", metric_ruleInstallCount);
 					printf("Avg. flow completion time: %.3lf\n", metric_avgFlowCompleteTime/totFlow);
+					printf("Wireless:Wired = %d:%d\n", numberOfWirelessFlow, numberOfWiredFlow);
 				}
 				break;
 
