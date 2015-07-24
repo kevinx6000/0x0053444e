@@ -75,8 +75,13 @@ void Fattree::start(void){
 					if(evt.getID() < numberOfCore + numberOfAggregate + numberOfEdge){
 						nowFlowID = rcdFlowID[evt.getPacket()];
 						if(evt.getID() == allEntry[nowFlowID][0].getSID()){
-							if(allEntry[nowFlowID][0].isWireless()) numberOfWirelessFlow ++;
-							else numberOfWiredFlow ++;
+
+							// Up to aggr or core only
+							if(evt.getPacket().getSrcIP().byte[1] != evt.getPacket().getDstIP().byte[1]
+									|| evt.getPacket().getSrcIP().byte[2] != evt.getPacket().getDstIP().byte[2]){
+								if(allEntry[nowFlowID][0].isWireless()) numberOfWirelessFlow ++;
+								else numberOfWiredFlow ++;
+							}
 						}
 					}
 
