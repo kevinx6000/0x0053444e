@@ -161,31 +161,66 @@ void Fattree::controller(Event ctrEvt){
 		nowFlowID = flowIDCount ++;
 		rcdFlowID[pkt] = nowFlowID;
 
-		// Wirless policy first, then wired policy
-		temp = ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay;
-		if(wireless(nid, pkt, vent, temp) || wired(nid, pkt, vent, temp)){
+		// Wireless seems better
+		if(wiredHop(pkt) > wirelessHop(pkt)){
 
-			// Install rule
-			for(int i = 0; i < vent.size(); i++){
+			// Wirless policy first, then wired policy
+			temp = ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay;
+			if(wireless(nid, pkt, vent, temp) || wired(nid, pkt, vent, temp)){
 
-				// Switch side event
-				ret.setEventType(EVENT_INSTALL);
-				ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
-				ret.setID(vent[i].getSID());
-				ret.setPacket(pkt);
-				ret.setEntry(vent[i]);
-				eventQueue.push(ret);
+				// Install rule
+				for(int i = 0; i < vent.size(); i++){
+
+					// Switch side event
+					ret.setEventType(EVENT_INSTALL);
+					ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
+					ret.setID(vent[i].getSID());
+					ret.setPacket(pkt);
+					ret.setEntry(vent[i]);
+					eventQueue.push(ret);
+				}
+
+				// Record inserted entries
+				allEntry.push_back(vent);
 			}
-			
-			// Record inserted entries
-			allEntry.push_back(vent);
+
+			// No such path exists
+			else{
+				fprintf(stderr, "Error: %s to %s: ", pkt.getSrcIP().fullIP.c_str(), pkt.getDstIP().fullIP.c_str());
+				fprintf(stderr, "No such path exists.\n");
+				/* Here we may need to handle such situation */
+			}
 		}
 
-		// No such path exists
+		// Wired is enough
 		else{
-			fprintf(stderr, "Error: %s to %s: ", pkt.getSrcIP().fullIP.c_str(), pkt.getDstIP().fullIP.c_str());
-			fprintf(stderr, "No such path exists.\n");
-			/* Here we may need to handle such situation */
+
+			// Wired policy first, then wireless policy
+			temp = ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay;
+			if(wired(nid, pkt, vent, temp) || wireless(nid, pkt, vent, temp)){
+
+				// Install rule
+				for(int i = 0; i < vent.size(); i++){
+
+					// Switch side event
+					ret.setEventType(EVENT_INSTALL);
+					ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
+					ret.setID(vent[i].getSID());
+					ret.setPacket(pkt);
+					ret.setEntry(vent[i]);
+					eventQueue.push(ret);
+				}
+
+				// Record inserted entries
+				allEntry.push_back(vent);
+			}
+
+			// No such path exists
+			else{
+				fprintf(stderr, "Error: %s to %s: ", pkt.getSrcIP().fullIP.c_str(), pkt.getDstIP().fullIP.c_str());
+				fprintf(stderr, "No such path exists.\n");
+				/* Here we may need to handle such situation */
+			}
 		}
 
 		// Clear Entry
