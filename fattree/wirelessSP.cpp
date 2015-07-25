@@ -7,12 +7,10 @@ void Fattree::wirelessSP(void){
 	// IDs
 	int srcID, dstID, nowID, nxtID;
 
-	// BFS randomly
+	// BFS sequentially
 	int prev[pod*pod/2];
 	int sft = numberOfCore + numberOfAggregate;
-	int pickPort;
 	queue<int>BFS;
-	vector<int>ranPort;
 
 	// Paths
 	vector<int>rev;
@@ -39,22 +37,14 @@ void Fattree::wirelessSP(void){
 		while(!BFS.empty()){
 			nowID = BFS.front();
 			BFS.pop();
-
-			// Generate port sequence
-			for(int j = 0; j < sw[nowID]->wlink.size(); j++)
-				ranPort.push_back(j);
 			for(int j = 0; j < sw[nowID]->wlink.size(); j++){
 
-				// Random pick one port
-				pickPort = rand()%((int)ranPort.size());
-				nxtID = sw[nowID]->wlink[ ranPort[pickPort] ].id;
+				// Sequentially pick one port
+				nxtID = sw[nowID]->wlink[j].id;
 				if(!prev[nxtID-sft]){
 					prev[nxtID-sft] = nowID;
 					BFS.push(nxtID);
 				}
-
-				// Remove that port
-				ranPort.erase(ranPort.begin()+pickPort);
 			}
 		}
 
