@@ -30,6 +30,7 @@ void Fattree::start(void){
 	int interfereCnt = 0;
 	int nowID, nxtID;
 	int i;
+	int FUCK;
 	arrive = 0;
 	totFlow = ((int)eventQueue.size()) - 1;
 
@@ -87,10 +88,13 @@ void Fattree::start(void){
 									
 									// Record interfere information
 									i = 0;
+FUCK = 0;
 									nowID = allEntry[nowFlowID][0].getSID();
+fprintf(stderr, "%d to ", nowID);
 									nxtID = sw[nowID]->wlink[ allEntry[nowFlowID][0].getOutputPort() ].id;
 									while(nxtID < numberOfCore + numberOfAggregate + numberOfEdge){
 										interfereCnt += ((int)sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ].size());
+FUCK += ((int)sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ].size());
 //fprintf(stderr, "(");
 //for(int j = 0; j < sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ].size(); j++)
 //	fprintf(stderr, " %d", sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ][j]);
@@ -104,7 +108,10 @@ void Fattree::start(void){
 											fprintf(stderr, "SOME BUGS HERE\n");
 											break;
 										}
-										if(!allEntry[nowFlowID][i].isWireless()) break;
+										if(!allEntry[nowFlowID][i].isWireless()){
+fprintf(stderr, "%d: %d\n", nowID, FUCK);
+											break;
+										}
 										nxtID = sw[nowID]->wlink[ allEntry[nowFlowID][i].getOutputPort() ].id;
 									}
 								}
