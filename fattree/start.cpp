@@ -46,12 +46,12 @@ void Fattree::start(void){
 
 			// No operation
 			case EVENT_NOP:
-//printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
+printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
 				break;
 
 			// Forwarding
 			case EVENT_FORWARD:
-//printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 
 				// Has previous hop record
 				itr = this->prevHop.find(evt.getPacket().getSequence());
@@ -124,7 +124,7 @@ fprintf(stderr, "%d: %d\n", nowID, FUCK);
 					if(blockFlow(evt, next)){
 
 						// Store into queue
-//printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 						pr.first = evt;
 						pr.second = next;
 						node[evt.getID()]->blockEvt.push_back(pr);
@@ -145,7 +145,7 @@ fprintf(stderr, "%d: %d\n", nowID, FUCK);
 
 			// Cumulate until interval timeout
 			case EVENT_FLOWSETUP:
-//printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				cumulate(evt);
 				metric_flowSetupRequest ++;
 				break;
@@ -157,7 +157,7 @@ fprintf(stderr, "%d: %d\n", nowID, FUCK);
 
 			// Install & forward
 			case EVENT_INSTALL:
-//printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				install(evt);
 				metric_ruleInstallCount ++;
 
@@ -186,7 +186,7 @@ fprintf(stderr, "%d: %d\n", nowID, FUCK);
 
 			// Flow transmission done
 			case EVENT_DONE:
-//printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
+printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
 
 				// Percentage
 				arrive ++;
