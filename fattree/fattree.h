@@ -63,6 +63,8 @@ class Fattree{
 		void modCap(int,int,double);	// Release capacity of previous hop
 		bool blockFlow(Event,Event);	// Check if capacity is enough or not
 		void resumeFlow(int,int);		// Resume blocked flow
+		int wiredHop(Packet);			// Calculate hops if using wired path
+		int wirelessHop(Packet);		// Calculate hops if using wireless path
 
 		// Metric
 		int metric_flowSetupRequest;
