@@ -27,10 +27,6 @@ void Fattree::start(void){
 	int numberOfWiredFlow = 0;
 	int numberOfWirelessFlow = 0;
 	int nowFlowID;
-	int interfereCnt = 0;
-	int nowID, nxtID;
-	int i;
-	int FUCK;
 	arrive = 0;
 	totFlow = ((int)eventQueue.size()) - 1;
 
@@ -46,12 +42,12 @@ void Fattree::start(void){
 
 			// No operation
 			case EVENT_NOP:
-printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
+//printf("[%6.1lf] No operation.\n", evt.getTimeStamp());
 				break;
 
 			// Forwarding
 			case EVENT_FORWARD:
-printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 
 				// Has previous hop record
 				itr = this->prevHop.find(evt.getPacket().getSequence());
@@ -83,38 +79,7 @@ printf("[%6.1lf] Forward: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getS
 							// Up to aggr or core only
 							if(evt.getPacket().getSrcIP().byte[1] != evt.getPacket().getDstIP().byte[1]
 									|| evt.getPacket().getSrcIP().byte[2] != evt.getPacket().getDstIP().byte[2]){
-								if(allEntry[nowFlowID][0].isWireless()){
-									numberOfWirelessFlow ++;
-									
-									// Record interfere information
-									i = 0;
-FUCK = 0;
-									nowID = allEntry[nowFlowID][0].getSID();
-fprintf(stderr, "%d to ", nowID);
-									nxtID = sw[nowID]->wlink[ allEntry[nowFlowID][0].getOutputPort() ].id;
-									while(nxtID < numberOfCore + numberOfAggregate + numberOfEdge){
-										interfereCnt += ((int)sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ].size());
-FUCK += ((int)sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ].size());
-//fprintf(stderr, "(");
-//for(int j = 0; j < sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ].size(); j++)
-//	fprintf(stderr, " %d", sw[nowID]->iList[ allEntry[nowFlowID][i].getOutputPort() ][j]);
-//fprintf(stderr, ")\n");
-										nowID = nxtID;
-										for(i = 0; i < allEntry[nowFlowID].size(); i++)
-											if(allEntry[nowFlowID][i].getSID() == nowID) break;
-
-										// BUG
-										if(i == allEntry[nowFlowID].size()){
-											fprintf(stderr, "SOME BUGS HERE\n");
-											break;
-										}
-										if(!allEntry[nowFlowID][i].isWireless()){
-fprintf(stderr, "%d: %d\n", nowID, FUCK);
-											break;
-										}
-										nxtID = sw[nowID]->wlink[ allEntry[nowFlowID][i].getOutputPort() ].id;
-									}
-								}
+								if(allEntry[nowFlowID][0].isWireless()) numberOfWirelessFlow ++;
 								else numberOfWiredFlow ++;
 							}
 						}
@@ -124,7 +89,7 @@ fprintf(stderr, "%d: %d\n", nowID, FUCK);
 					if(blockFlow(evt, next)){
 
 						// Store into queue
-printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 						pr.first = evt;
 						pr.second = next;
 						node[evt.getID()]->blockEvt.push_back(pr);
@@ -145,7 +110,7 @@ printf("[%6.1lf] Block: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSeq
 
 			// Cumulate until interval timeout
 			case EVENT_FLOWSETUP:
-printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				cumulate(evt);
 				metric_flowSetupRequest ++;
 				break;
@@ -157,7 +122,7 @@ printf("[%6.1lf] Flow setup request: %d at %d.\n", evt.getTimeStamp(), evt.getPa
 
 			// Install & forward
 			case EVENT_INSTALL:
-printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
+//printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSequence(), evt.getID());
 				install(evt);
 				metric_ruleInstallCount ++;
 
@@ -186,7 +151,7 @@ printf("[%6.1lf] Install: %d at %d\n", evt.getTimeStamp(), evt.getPacket().getSe
 
 			// Flow transmission done
 			case EVENT_DONE:
-printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
+//printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
 
 				// Percentage
 				arrive ++;
@@ -206,13 +171,12 @@ printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
 					printf("# of installed rules: %d\n", metric_ruleInstallCount);
 					printf("Avg. flow completion time: %.3lf\n", metric_avgFlowCompleteTime/totFlow);
 					printf("Wireless:Wired = %d:%d\n", numberOfWirelessFlow, numberOfWiredFlow);
-					printf("Interfere nodes = %d\n", interfereCnt);
 				}
 				break;
 
 			// Unknown
 			case EVENT_UNKNOWN:
-				printf("Error: unknown operation found.\n");
+//				printf("Error: unknown operation found.\n");
 				break;
 		}
 	}

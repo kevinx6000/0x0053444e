@@ -7,10 +7,14 @@ void Fattree::wirelessSP(void){
 	// IDs
 	int srcID, dstID, nowID, nxtID;
 
-	// BFS sequentially
-	int prev[pod*pod/2];
+	// SPFA evilly
 	int sft = numberOfCore + numberOfAggregate;
-	queue<int>BFS;
+	int que[numberOfEdge], head, tail;
+	int dis[numberOfEdge];
+	int itf[numberOfEdge];
+	int prev[numberOfEdge];
+	bool inque[numberOfEdge];
+	int tmp;
 
 	// Paths
 	vector<int>rev;
@@ -24,46 +28,71 @@ void Fattree::wirelessSP(void){
 	// All pair shortest path
 	for(int i = 0; i < numberOfEdge; i++){
 
-		// Self: empty path
-		this->wlPath[i].push_back(path);
+		// Initialize
+		for(int j = 0; j < numberOfEdge; j++)
+			dis[j] = (int)1e9;
+		memset(inque, false, sizeof(inque));
+		memset(prev, -1, sizeof(prev));
+		head = tail = 0;
 
-		// Clear previous record
-		memset(prev, 0, sizeof(prev));
-
-		// BFS
-		srcID = sft + i;
-		BFS.push(srcID);
-		prev[srcID-sft] = srcID;
-		while(!BFS.empty()){
-			nowID = BFS.front();
-			BFS.pop();
-			for(int j = 0; j < sw[nowID]->wlink.size(); j++){
-
-				// Sequentially pick one port
-				nxtID = sw[nowID]->wlink[j].id;
-				if(!prev[nxtID-sft]){
-					prev[nxtID-sft] = nowID;
-					BFS.push(nxtID);
+		// SPFA for all destinations
+		dis[i] = 0;
+		itf[i] = 0;
+		que[tail++] = i;
+		inque[i] = true;
+		while(head < tail){
+			nowID = que[head%numberOfEdge];
+			inque[nowID] = false;
+			head ++;
+			for(int z = 0; z < sw[nowID + sft]->wlink.size(); z++){
+				nxtID = sw[nowID + sft]->wlink[z].id - sft;
+				if(dis[nowID] + 1 < dis[nxtID]){
+					dis[nxtID] = dis[nowID] + 1;
+					itf[nxtID] = itf[nowID] + ((int)sw[nowID + sft]->iList[z].size());
+					prev[nxtID] = nowID;
+					if(!inque[nxtID]){
+						que[tail%numberOfEdge] = nxtID;
+						inque[nxtID] = true;
+						tail ++;
+					}
+				}
+				else if(dis[nowID] + 1 == dis[nxtID]){
+					tmp = itf[nowID] + ((int)sw[nowID + sft]->iList[z].size());
+					if(tmp > itf[nxtID]){
+						itf[nxtID] = tmp;
+						prev[nxtID] = nowID;
+						if(!inque[nxtID]){
+							que[tail%numberOfEdge] = nxtID;
+							inque[nxtID] = true;
+							tail ++;
+						}
+					}
 				}
 			}
 		}
 
-		// All destination Path
-		for(int j = i+1; j < numberOfEdge; j++){
-			dstID = sft + j;
-			nowID = dstID;
-			while(nowID != srcID){
-				rev.push_back(nowID);
-				nowID = prev[nowID-sft];
+		// For all destinations
+		for(int j = 0; j < numberOfEdge; j++){
+
+			// Self: empty path
+			if(j == i){
+				this->wlPath[i].push_back(path);
+				continue;
 			}
-			rev.push_back(srcID);
+
+			// Recover path
+			nowID = j;
+			while(nowID != i){
+				rev.push_back(nowID + sft);
+				nowID = prev[nowID];
+			}
+			rev.push_back(i + sft);
 			for(int z = rev.size()-1; z >= 0; z--)
 				path.push_back(rev[z]);
-
+			
 			// Row path
 			this->wlPath[i].push_back(path);
-			this->wlPath[j].push_back(rev);
-
+			
 			// Clear
 			path.clear();
 			rev.clear();
