@@ -81,14 +81,12 @@ void Fattree::controller(Event ctrEvt){
 						// Remove entries with the same flow ID, if it has different output port (switch side)
 						for(int j = 0; j < vent.size(); j++){
 							temp = vent[j].getSID();
-							for(k = 0; k < sw[temp]->TCAM.size(); k++){
-								// Has rule for this flow
-								if(sw[temp]->TCAM[k].isMatch(pkt)){
-									if(sw[temp]->TCAM[k].getOutputPort() != vent[j].getOutputPort()){
 
-										/* No need to remove switch TCAM entry here, */
-										/* because install event will do this. */
-
+							// Has rule for this flow
+							if(sw[temp]->TCAMmap.count(pkt) > 0){
+								if(sw[temp]->TCAMmap[pkt]->ent.getOutputPort() != vent[j].getOutputPort()){
+										/* No need to remove this entry */
+										/* because install event will do this */
 										// Install the new entry
 										ret.setEventType(EVENT_INSTALL);
 										ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
@@ -96,12 +94,11 @@ void Fattree::controller(Event ctrEvt){
 										ret.setPacket(pkt);
 										ret.setEntry(vent[j]);
 										eventQueue.push(ret);
-									}
-									break;
 								}
 							}
+
 							// No rule for this flow
-							if(k == sw[temp]->TCAM.size()){
+							else{
 								// Install the new entry
 								ret.setEventType(EVENT_INSTALL);
 								ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);

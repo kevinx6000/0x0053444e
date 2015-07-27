@@ -4,10 +4,16 @@
 
 // Remove expired entries
 void Fattree::updateTCAM(int nid, int timeStamp){
-	for(int i = 0; i < sw[nid]->TCAM.size(); i++){
-		if(sw[nid]->TCAM[i].isExpired(timeStamp)){
-			sw[nid]->TCAM.erase(sw[nid]->TCAM.begin()+i);
-			i--;
+
+	Packet tmpPkt;
+
+	// The most front entries
+	while(!sw[nid]->TCAM.empty()){
+		if(sw[nid]->TCAM.front().isExpired(timeStamp)){
+			tmpPkt = sw[nid]->TCAM.front().getSample();
+			sw[nid]->TCAMmap.erase(tmpPkt);
+			sw[nid]->TCAM.pop_front();
 		}
+		else break;
 	}
 }
