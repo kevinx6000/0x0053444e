@@ -30,6 +30,7 @@ class Entry{
 		int getPriority(void);
 		int getSID(void);
 		double getRate(void);
+		Packet getSample(void);
 		bool isMatch(Packet);
 		void isWireless(bool);
 		bool isWireless(void);

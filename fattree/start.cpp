@@ -15,7 +15,7 @@
 void Fattree::start(void){
 
 	// Until all event finished
-	int sid, siz, arrive, totFlow;
+	int sid, arrive, totFlow;
 	double ts;
 	Event evt, next;
 	PrevHop ph;
@@ -129,11 +129,10 @@ void Fattree::start(void){
 				// Check the queue of corresponding switch
 				sid = evt.getID();
 				ts = evt.getTimeStamp();
-				siz = sw[sid]->TCAM.size();
 				for(int i = 0; i < sw[sid]->que.size(); i++){
 
 					// Only check last entry of TCAM
-					if(sw[sid]->TCAM[siz-1].isMatch(sw[sid]->que[i])){
+					if(sw[sid]->TCAM.back().isMatch(sw[sid]->que[i])){
 
 						// Forward that packet
 						next.setTimeStamp(ts);

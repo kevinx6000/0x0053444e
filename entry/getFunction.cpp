@@ -23,3 +23,9 @@ bool Entry::isWireless(void){
 bool Entry::isExpired(int curTime){
 	return this->expireTime <= curTime;
 }
+Packet Entry::getSample(void){
+	IP srcIP(srcMask[0], srcMask[1], srcMask[2], srcMask[3]);
+	IP dstIP(dstMask[0], dstMask[1], dstMask[2], dstMask[3]);
+	Packet pkt(srcIP, dstIP, srcPort, dstPort, protocol);
+	return pkt;
+}

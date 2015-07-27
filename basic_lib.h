@@ -21,4 +21,12 @@ typedef struct{
 	int id;
 	double cap;
 }EDGE;
+// Linked list node Structure
+#include "entry/entry.h"
+struct gNode{
+	Entry ent;
+	struct gNode *prev;
+	struct gNode *next;
+};
+typedef struct gNode LLNODE;
 #endif
