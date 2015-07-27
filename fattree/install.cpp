@@ -19,12 +19,20 @@ void Fattree::install(Event evt){
 	int nid = evt.getID();
 	Entry ent = evt.getEntry();
 	Packet pkt = evt.getPacket();
+	Packet tmpPkt;
 	Event ret;
 
-	// Remove if full
-	if(sw[nid]->TCAM.size() >= maxEntry)
-		sw[nid]->TCAM.erase(sw[nid]->TCAM.begin());
+	/* Maybe here we need to remove expired entries??? */
+
+	// If TCAM is full
+	if(sw[nid]->TCAM.size() >= maxEntry){
+
+		// Remove the front most entry
+		tmpPkt = sw[nid]->TCAM.front().getSample();
+		sw[nid]->TCAMmap.erase(tmpPkt);
+		sw[nid]->TCAM.pop_front();
+	}
 
 	// Install at the tail
-	sw[nid]->TCAM.push_back(ent);
+	sw[nid]->TCAMmap[pkt] = sw[nid]->TCAM.push_back(ent);
 }

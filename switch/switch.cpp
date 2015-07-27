@@ -17,6 +17,7 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	double forwardDelay;
 	int outputPort;
 	bool arrive;
+	Packet tmpPkt;
 	Event evt;
 	IP dstIP;
 	IP selfIP;
@@ -39,22 +40,22 @@ Event Switch::forward(double timeStamp, Packet pkt){
 		return evt;
 	}
 
+	// Remove expired entries
+	while(!TCAM.empty()){
+		if(TCAM.front().isExpired(timeStamp)){
+			tmpPkt = TCAM.front().getSample();
+			TCAMmap.erase(tmpPkt);
+			TCAM.pop_front();
+		}
+		else break;
+	}
+
 	// Search in TCAM
-	int pri = -1, pp, rid;
+	int pri = -1;
 	Entry result;
-	for(int i = 0; i < TCAM.size(); i++){
-		if(TCAM[i].isExpired(timeStamp)){
-			TCAM.erase(TCAM.begin()+i);
-			i--;
-		}
-		else if(TCAM[i].isMatch(pkt)){
-			pp = TCAM[i].getPriority();
-			if(pp > pri){
-				pri = pp;
-				result = TCAM[i];
-				rid = i;
-			}
-		}
+	if(TCAMmap.count(pkt) > 0){
+		result = TCAMmap[pkt]->ent;
+		pri = 0;
 	}
 
 	// Entry not found
@@ -89,8 +90,8 @@ Event Switch::forward(double timeStamp, Packet pkt){
 
 	// Update entry expire time, move to tail
 	result.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
-	TCAM.push_back(result);
-	TCAM.erase(TCAM.begin() + rid);
+	TCAM.remove(TCAMmap[pkt]);
+	TCAMmap[pkt] = TCAM.push_back(result);
 
 	// Clear
 	isSetup[pkt] = false;
