@@ -14,7 +14,6 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 
 	// Maximum flow entry
 	map<int,int>prevNode;
-	map<int,int>pathMin;
 
 	// Enumerate all path
 	int nowID;
@@ -26,7 +25,6 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 	double dataRate = pkt.getDataRate();
 	queue<int>BFS;
 	BFS.push(srcID);
-	pathMin[srcID] = 0;
 	endID = pathInit(pkt, prevNode);
 	prevNode[srcID] = srcID;
 
@@ -40,7 +38,6 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 		for(int i = 0; i < pod/2; i++){
 			if(node[nowID]->link[i].cap >= dataRate){
 				dstID = node[nowID]->link[i].id;
-				pathMin[dstID] = sw[nowID]->TCAM.size();
 				BFS.push(dstID);
 				prevNode[dstID] = nowID;
 			}
@@ -59,7 +56,6 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 			for(int j = 0; j < pod/2; j++){
 				if(node[nowID]->link[j].cap >= dataRate){
 					dstID = node[nowID]->link[j].id;
-					pathMin[dstID] = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					BFS.push(dstID);
 					prevNode[dstID] = nowID;
 				}
@@ -68,7 +64,6 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 	}
 
 	// Core -> Aggregate
-	int siz;
 	if(srcIP.byte[1] != dstIP.byte[1]){
 		queSiz = BFS.size();
 		for(int i = 0; i < queSiz; i++){
@@ -79,23 +74,16 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 			updateTCAM(nowID, timeStamp);
 			if(node[nowID]->link[ dstIP.byte[1] ].cap >= dataRate){
 				dstID = node[nowID]->link[ dstIP.byte[1] ].id;
+
+				// First one
 				if(prevNode[dstID]==-1){
-					pathMin[dstID] = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					prevNode[dstID] = nowID;
 					BFS.push(dstID);
-					siz = sw[nowID]->TCAM.size();
 				}
 				else{
-					tmpMax = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
-					if(tmpMax < pathMin[dstID]){
-						pathMin[dstID] = tmpMax;
-						siz = sw[nowID]->TCAM.size();
+					// Random pick
+					if(rand()%2)
 						prevNode[dstID] = nowID;
-					}
-					else if(tmpMax == pathMin[dstID] && sw[nowID]->TCAM.size() < siz){
-						siz = sw[nowID]->TCAM.size();
-						prevNode[dstID] = nowID;
-					}
 				}
 			}
 		}
@@ -112,24 +100,17 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 			updateTCAM(nowID, timeStamp);
 			if(node[nowID]->link[ pod/2 + dstIP.byte[2] ].cap >= dataRate){
 				dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
+
+				// First one
 				if(prevNode[dstID]==-1){
-					pathMin[dstID] = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
 					prevNode[dstID] = nowID;
 					BFS.push(dstID);
-					siz = sw[nowID]->TCAM.size();
 				}
 				else{
-					tmpMax = myMax(sw[nowID]->TCAM.size(), pathMin[nowID]);
-					if(tmpMax < pathMin[dstID]){
-						pathMin[dstID] = tmpMax;
-						siz = sw[nowID]->TCAM.size();
+					// Randomly pick
+					if(rand()%2)
 						prevNode[dstID] = nowID;
-					}
-					else if(tmpMax == pathMin[dstID] && sw[nowID]->TCAM.size() < siz){
-						siz = sw[nowID]->TCAM.size();
-						prevNode[dstID] = nowID;
-					}
-				}
+				}	
 			}
 		}
 	}
