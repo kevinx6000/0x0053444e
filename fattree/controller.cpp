@@ -162,6 +162,40 @@ void Fattree::controller(Event ctrEvt){
 		nowFlowID = flowIDCount ++;
 		rcdFlowID[pkt] = nowFlowID;
 
+		// LARGE FLOW!!!!!!
+		if(pkt.getDataRate() >= 0.125){
+
+			// You MUST use wired :)
+			temp = ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay;
+			if(wired(nid, pkt, vent, temp)){
+
+				// Install rule
+				for(int i = 0; i < vent.size(); i++){
+
+					// Switch side event
+					ret.setEventType(EVENT_INSTALL);
+					ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay);
+					ret.setID(vent[i].getSID());
+					ret.setPacket(pkt);
+					ret.setEntry(vent[i]);
+					eventQueue.push(ret);
+				}
+
+				// Record inserted entries
+				allEntry.push_back(vent);
+
+				// Clear Entry
+				vent.clear();
+			}
+
+			// What?? No wired path!?
+			else{
+				fprintf(stderr, "Error: %s to %s: ", pkt.getSrcIP().fullIP.c_str(), pkt.getDstIP().fullIP.c_str());
+				fprintf(stderr, "No such WIRED path exists.\n");
+			}
+			continue;
+		}
+
 		// Wireless seems better
 		if(wiredHop(pkt) > wirelessHop(pkt)){
 
