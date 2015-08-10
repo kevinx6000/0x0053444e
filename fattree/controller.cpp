@@ -148,6 +148,10 @@ void Fattree::controller(Event ctrEvt){
 	if(((int)cumQue.size()) > 0) hasHandle = true;
 	cumQue.clear();
 
+	// Sort with the largest gap between wired & wireless
+	mySort msrt(this);
+	sort(flowSetupEvent.begin(), flowSetupEvent.end(), msrt);
+
 	// Currently, all flow setup apply wired policy
 	for(int j = 0; j < flowSetupEvent.size(); j++){
 		evt = flowSetupEvent[j];
