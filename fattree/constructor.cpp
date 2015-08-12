@@ -121,4 +121,12 @@ Fattree::Fattree(int k){
 	evt.setEventType(EVENT_INTERVAL);
 	evt.setTimeStamp(CONTROL_BATCH);
 	eventQueue.push(evt);
+
+	// Metric
+	metric_flowSetupRequest = 0;
+	metric_ruleInstallCount = 0;
+	metric_avgFlowCompleteTime = 0.0;
+	ruleReplacementCore = 0;
+	ruleReplacementAggr = 0;
+	ruleReplacementEdge = 0;
 }
