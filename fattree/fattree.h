@@ -71,5 +71,8 @@ class Fattree{
 		int metric_ruleInstallCount;
 		double metric_avgFlowCompleteTime;
 		map<int,double>metric_flowArrivalTime;
+		int ruleReplacementCore;
+		int ruleReplacementAggr;
+		int ruleReplacementEdge;
 };
 #endif

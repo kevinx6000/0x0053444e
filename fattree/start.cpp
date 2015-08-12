@@ -169,6 +169,12 @@ void Fattree::start(void){
 					printf("# of installed rules: %d\n", metric_ruleInstallCount);
 					printf("Avg. flow completion time: %.3lf\n", metric_avgFlowCompleteTime/totFlow);
 					printf("Wireless:Wired = %d:%d\n", numberOfWirelessFlow, numberOfWiredFlow);
+					printf("Replacement %d / %d / %d\n", ruleReplacementCore, ruleReplacementAggr, ruleReplacementEdge);
+/*
+					printf("%d %d %.3lf %d %d %d %d %d\n", metric_flowSetupRequest, metric_ruleInstallCount,
+							metric_avgFlowCompleteTime/totFlow, numberOfWirelessFlow, numberOfWiredFlow,
+							ruleReplacementCore, ruleReplacementAggr, ruleReplacementEdge);
+*/
 				}
 				break;
 
