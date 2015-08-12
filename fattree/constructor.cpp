@@ -188,4 +188,7 @@ Fattree::Fattree(int k){
 	metric_flowSetupRequest = 0;
 	metric_ruleInstallCount = 0;
 	metric_avgFlowCompleteTime = 0.0;
+	ruleReplacementCore = 0;
+	ruleReplacementAggr = 0;
+	ruleReplacementEdge = 0;
 }

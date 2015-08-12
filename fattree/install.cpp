@@ -34,6 +34,11 @@ void Fattree::install(Event evt){
 		tmpPkt = sw[nid]->TCAM.front().getSample();
 		sw[nid]->TCAMmap.erase(tmpPkt);
 		sw[nid]->TCAM.pop_front();
+
+		// Count
+		if(nid < numberOfCore) ruleReplacementCore ++;
+		else if(nid < numberOfCore + numberOfAggregate) ruleReplacementAggr ++;
+		else ruleReplacementEdge ++;
 	}
 
 	// Install at the tail
