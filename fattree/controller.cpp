@@ -55,79 +55,19 @@ void Fattree::controller(Event ctrEvt){
 
 				// Extract original entry
 				if(rule(nid, allEntry[nowFlowID], ent)){
-
-					// Update timestamp
 					ent.setExpire(ctrEvt.getTimeStamp() + flowSetupDelay + ENTRY_EXPIRE_TIME);
-					temp = ctrEvt.getTimeStamp() + flowSetupDelay + computePathDelay;
+				
+					// Switch side install rule
+					ret.setEventType(EVENT_INSTALL);
+					ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
+					ret.setID(nid);
+					ret.setPacket(pkt);
+					ret.setEntry(ent);
+					eventQueue.push(ret);
 
-					// Starting edge switch, and has wireless or better wired path
-					if(nid == allEntry[nowFlowID][0].getSID() && (wireless(nid, pkt, vent, temp) || wired(nid, pkt, vent, temp))){
-
-						// Remove entries with the same switch ID (controller side)
-						for(int j = 0; j < vent.size(); j++){
-							temp = vent[j].getSID();
-							for(k = 0; k < allEntry[nowFlowID].size(); k++){
-								if(allEntry[nowFlowID][k].getSID() == temp){
-									allEntry[nowFlowID].erase(allEntry[nowFlowID].begin() + k);
-									k--;
-								}
-							}
-						}
-
-						// Add entries
-						for(int j = 0; j < vent.size(); j++)
-							allEntry[nowFlowID].insert(allEntry[nowFlowID].begin()+j, vent[j]);
-
-						// Remove entries with the same flow ID, if it has different output port (switch side)
-						for(int j = 0; j < vent.size(); j++){
-							temp = vent[j].getSID();
-
-							// Has rule for this flow
-							if(sw[temp]->TCAMmap.count(pkt) > 0){
-								if(sw[temp]->TCAMmap[pkt]->ent.getOutputPort() != vent[j].getOutputPort()){
-										/* No need to remove this entry */
-										/* because install event will do this */
-										// Install the new entry
-										ret.setEventType(EVENT_INSTALL);
-										ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
-										ret.setID(vent[j].getSID());
-										ret.setPacket(pkt);
-										ret.setEntry(vent[j]);
-										eventQueue.push(ret);
-								}
-							}
-
-							// No rule for this flow
-							else{
-								// Install the new entry
-								ret.setEventType(EVENT_INSTALL);
-								ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
-								ret.setID(vent[j].getSID());
-								ret.setPacket(pkt);
-								ret.setEntry(vent[j]);
-								eventQueue.push(ret);
-							}
-						}
-					}
-
-					/* Possible situations: */
-					/* 1: Any switch along the path */
-					/* 2: Starting edge swithc with no capacity available */
-					else{
-
-						// Install the original entry back to switch
-						ret.setEventType(EVENT_INSTALL);
-						ret.setTimeStamp(ctrEvt.getTimeStamp() + flowSetupDelay);
-						ret.setID(nid);
-						ret.setPacket(pkt);
-						ret.setEntry(ent);
-						eventQueue.push(ret);
-					}
-				}
-
-				// No entry for recorded flow???
+				}	
+				// No rules for repeated old flow
 				else{
-					/* I don't know how this can happen... */
 					/* Maybe it's caused by rule deletion of starting edge policy? */
 					fprintf(stderr, "Error: extract original flow entry failed.\n");
 				}
