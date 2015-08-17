@@ -13,7 +13,8 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 	IP dstIP = pkt.getDstIP();
 
 	// Maximum flow entry
-	map<int,int>prevNode;
+	map<int, vector<int> >prevNode;
+	prevNode.clear();
 
 	// Enumerate all path
 	int nowID;
@@ -25,8 +26,12 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 	double dataRate = pkt.getDataRate();
 	queue<int>BFS;
 	BFS.push(srcID);
-	endID = pathInit(pkt, prevNode);
-	prevNode[srcID] = srcID;
+	prevNode[srcID].push_back(srcID);
+
+	// Destination switch ID
+	int hostID = numberOfCore + numberOfAggregate + numberOfEdge +
+		dstIP.byte[1]*pod*pod/4 + dstIP.byte[2]*pod/2 + dstIP.byte[3]-2;
+	endID = node[hostID]->link[0].id;
 
 	// Edge -> Aggregate
 	if(srcIP.byte[1] != dstIP.byte[1] || srcIP.byte[2] != dstIP.byte[2]){
@@ -39,7 +44,7 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 			if(node[nowID]->link[i].cap >= dataRate){
 				dstID = node[nowID]->link[i].id;
 				BFS.push(dstID);
-				prevNode[dstID] = nowID;
+				prevNode[dstID].push_back(nowID);
 			}
 		}
 	}
@@ -57,7 +62,7 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 				if(node[nowID]->link[j].cap >= dataRate){
 					dstID = node[nowID]->link[j].id;
 					BFS.push(dstID);
-					prevNode[dstID] = nowID;
+					prevNode[dstID].push_back(nowID);
 				}
 			}
 		}
@@ -75,16 +80,9 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 			if(node[nowID]->link[ dstIP.byte[1] ].cap >= dataRate){
 				dstID = node[nowID]->link[ dstIP.byte[1] ].id;
 
-				// First one
-				if(prevNode[dstID]==-1){
-					prevNode[dstID] = nowID;
-					BFS.push(dstID);
-				}
-				else{
-					// Random pick
-					if(rand()%2)
-						prevNode[dstID] = nowID;
-				}
+				// Record all possible candidates
+				if(!prevNode[dstID].size()) BFS.push(dstID);
+				prevNode[dstID].push_back(nowID);
 			}
 		}
 	}
@@ -101,30 +99,24 @@ bool Fattree::wired(int nid, Packet pkt, vector<Entry>& vent, int timeStamp){
 			if(node[nowID]->link[ pod/2 + dstIP.byte[2] ].cap >= dataRate){
 				dstID = node[nowID]->link[ pod/2 + dstIP.byte[2] ].id;
 
-				// First one
-				if(prevNode[dstID]==-1){
-					prevNode[dstID] = nowID;
-					BFS.push(dstID);
-				}
-				else{
-					// Randomly pick
-					if(rand()%2)
-						prevNode[dstID] = nowID;
-				}	
+				// Record all possible candidates
+				if(!prevNode[dstID].size()) BFS.push(dstID);
+				prevNode[dstID].push_back(nowID);
 			}
 		}
 	}
 
 	// Create entries along these switches
-	int port;
+	int port, ranID;
 	Entry ent;
 	vector<int>revSeq;
-	if(prevNode[endID]!=-1){
+	if(prevNode[endID].size() > 0){
 		vent.clear();
 		nowID = endID;
 		revSeq.push_back(endID);
 		while(nowID != srcID){
-			nowID = prevNode[nowID];
+			ranID = rand()%(prevNode[nowID].size());
+			nowID = prevNode[nowID][ranID];
 			revSeq.push_back(nowID);
 		}
 		ent.setSrcMask(srcIP.byte[0], srcIP.byte[1], srcIP.byte[2], srcIP.byte[3]);
