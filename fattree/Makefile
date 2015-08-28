@@ -1,4 +1,4 @@
-all: constructor controller readInput install start rule getFunction wired legalAddr cumulate pathInit vecdot vecdis updateTCAM modCap recrdPrev blockFlow resumeFlow
+all: constructor controller readInput install start rule getFunction wired legalAddr cumulate pathInit vecdot vecdis updateTCAM modCap recrdPrev blockFlow resumeFlow begTransmission endTransmission
 
 constructor:
 	g++ -c constructor.cpp
@@ -53,3 +53,9 @@ blockFlow:
 
 resumeFlow:
 	g++ -c resumeFlow.cpp
+
+begTransmission:
+	g++ -c begTransmission.cpp
+
+endTransmission:
+	g++ -c endTransmission.cpp

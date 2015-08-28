@@ -18,6 +18,9 @@ Fattree::Fattree(int k){
 	// TCAM entries
 	maxEntry = MAX_TCAM_ENTRY;
 
+	// Clear alive flow count
+	aliveFlow.clear();
+
 	// Prevent illegal k
 	if(k<2) k=2;
 	if(k%2) k--;

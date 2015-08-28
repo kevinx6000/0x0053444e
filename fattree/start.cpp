@@ -64,6 +64,13 @@ void Fattree::start(void){
 				// Forward event
 				if(next.getEventType() == EVENT_FORWARD){
 
+					/* At starting host only */
+					if(evt.getID() >= numberOfCore + numberOfAggregate + numberOfEdge){
+
+						// Update alive flows
+						begTransmission(evt.getTimeStamp(), evt.getPacket());
+					}
+
 					// Blocked
 					if(blockFlow(evt, next)){
 
@@ -110,7 +117,7 @@ void Fattree::start(void){
 				for(int i = 0; i < sw[sid]->que.size(); i++){
 
 					// Only check last entry of TCAM
-					if(sw[sid]->TCAM.back().isMatch(sw[sid]->que[i])){
+					if(sw[sid]->TCAMactive.back().isMatch(sw[sid]->que[i])){
 
 						// Forward that packet
 						next.setTimeStamp(ts);
@@ -129,6 +136,9 @@ void Fattree::start(void){
 			// Flow transmission done
 			case EVENT_DONE:
 //printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
+				
+				// Update alive flows
+				endTransmission(evt.getTimeStamp(), evt.getPacket());
 
 				// Percentage
 				arrive ++;

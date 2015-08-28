@@ -36,16 +36,23 @@ Event Switch::forward(double timeStamp, Packet pkt){
 		evt.setTimeStamp(timeStamp);
 		evt.setEventType(EVENT_DONE);
 		evt.setPacket(pkt);
-//printf("[%6.1lf] Flow %s arrives at destination.\n", timeStamp, pkt.getDstIP().fullIP.c_str());
 		return evt;
 	}
 
-	// Remove expired entries
-	while(!TCAM.empty()){
-		if(TCAM.front().isExpired(timeStamp)){
-			tmpPkt = TCAM.front().getSample();
-			TCAMmap.erase(tmpPkt);
-			TCAM.pop_front();
+	// Remove expired entries (Active & inactive)
+	while(!TCAMactive.empty()){
+		if(TCAMactive.front().isExpired(timeStamp)){
+			tmpPkt = TCAMactive.front().getSample();
+			TCAMmapA.erase(tmpPkt);
+			TCAMactive.pop_front();
+		}
+		else break;
+	}
+	while(!TCAMinactive.empty()){
+		if(TCAMinactive.front().isExpired(timeStamp)){
+			tmpPkt = TCAMinactive.front().getSample();
+			TCAMmapI.erase(tmpPkt);
+			TCAMinactive.pop_front();
 		}
 		else break;
 	}
@@ -53,9 +60,26 @@ Event Switch::forward(double timeStamp, Packet pkt){
 	// Search in TCAM
 	int pri = -1;
 	Entry result;
-	if(TCAMmap.count(pkt) > 0){
-		result = TCAMmap[pkt]->ent;
+	if(TCAMmapA.count(pkt) > 0){
+		result = TCAMmapA[pkt]->ent;
 		pri = 0;
+
+		// Update entry expire time & Install at the tail (LRU)
+		result.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
+		TCAMactive.remove(TCAMmapA[pkt]);
+		TCAMmapA[pkt] = TCAMactive.push_back(result);
+	}
+	else if(TCAMmapI.count(pkt) > 0){
+		result = TCAMmapI[pkt]->ent;
+		pri = 0;
+
+		// Remove from inactive
+		TCAMinactive.remove(TCAMmapI[pkt]);
+		TCAMmapI.erase(pkt);
+		
+		// Update timestamp &  Install at the tail (LRU)
+		result.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
+		TCAMmapA[pkt] = TCAMactive.push_back(result);
 	}
 
 	// Entry not found
@@ -87,11 +111,6 @@ Event Switch::forward(double timeStamp, Packet pkt){
 			return evt;
 		}
 	}
-
-	// Update entry expire time, move to tail
-	result.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
-	TCAM.remove(TCAMmap[pkt]);
-	TCAMmap[pkt] = TCAM.push_back(result);
 
 	// Clear
 	isSetup[pkt] = false;
