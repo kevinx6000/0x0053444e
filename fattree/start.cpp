@@ -85,6 +85,12 @@ void Fattree::start(void){
 						}
 					}
 
+					// Hosts
+					else{
+						// Update alive flows
+						begTransmission(evt.getTimeStamp(), evt.getPacket());
+					}
+
 					// Blocked
 					if(blockFlow(evt, next)){
 
@@ -97,7 +103,6 @@ void Fattree::start(void){
 					}
 	
 					else{
-
 						// Record previous hop and consume capacity
 						recrdPrev(evt, next);
 						modCap(evt.getID(), evt.getPacket().getSequence(), evt.getPacket().getDataRate()*(-1.0));
@@ -152,6 +157,9 @@ void Fattree::start(void){
 			case EVENT_DONE:
 //printf("[%6.1lf] %d flows arrives\n", evt.getTimeStamp(), arrive);
 
+				// Update alive flows
+				endTransmission(evt.getTimeStamp(), evt.getPacket());
+
 				// Percentage
 				arrive ++;
 				perCent = (arrive*100)/totFlow;
@@ -172,6 +180,12 @@ void Fattree::start(void){
 					printf("Wireless:Wired = %d:%d\n", numberOfWirelessFlow, numberOfWiredFlow);
 					printf("Replacement %d / %d / %d\n", ruleReplacementCore, ruleReplacementAggr, ruleReplacementEdge);
 				}
+/*
+					printf("%d %d %.3lf %d %d %d %d %d\n", metric_flowSetupRequest, metric_ruleInstallCount,
+							metric_avgFlowCompleteTime/totFlow, numberOfWirelessFlow, numberOfWiredFlow,
+							ruleReplacementCore, ruleReplacementAggr, ruleReplacementEdge);
+*/
+
 				break;
 
 			// Unknown

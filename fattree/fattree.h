@@ -45,6 +45,7 @@ class Fattree{
 		vector< vector<Entry> > allEntry;	// Flow entries of some flows
 		vector<Event>cumQue;			// Cumulated event queue
 		map<int,PrevHop>prevHop;		// Previous hop
+		map<Packet,int>aliveFlow;		// Number of alive flow currently in the network
 
 		// Private method
 		void controller(Event);			// Handles a batch of flow setup requests
@@ -65,6 +66,8 @@ class Fattree{
 		void resumeFlow(int,int);		// Resume blocked flow
 		int wiredHop(Packet);			// Calculate hops if using wired path
 		int wirelessHop(Packet);		// Calculate hops if using wireless path
+		void begTransmission(double,Packet);	// Called when transmission starts
+		void endTransmission(double,Packet);	// Called when transmission finishes
 
 		// Metric
 		int metric_flowSetupRequest;

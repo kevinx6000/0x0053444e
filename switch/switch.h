@@ -20,7 +20,9 @@ class Switch: public Node{
 		vector<EDGE>wlink;
 		vector< vector<int> >iList;
 		double APrate;
-		MyLL TCAM;
-		map<Packet,LLNODE*>TCAMmap;
+		MyLL TCAMactive;
+		MyLL TCAMinactive;
+		map<Packet,LLNODE*>TCAMmapA;
+		map<Packet,LLNODE*>TCAMmapI;
 };
 #endif
