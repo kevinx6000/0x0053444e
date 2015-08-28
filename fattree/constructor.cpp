@@ -18,6 +18,9 @@ Fattree::Fattree(int k){
 	// TCAM entries
 	maxEntry = MAX_TCAM_ENTRY;
 
+	// Clear alive flow count
+	aliveFlow.clear();
+
 	// Controller available time
 	compAvail = 0.0;
 
