@@ -137,7 +137,7 @@ void Fattree::start(void){
 				for(int i = 0; i < sw[sid]->que.size(); i++){
 
 					// Only check last entry of TCAM
-					if(sw[sid]->TCAM.back().isMatch(sw[sid]->que[i])){
+					if(sw[sid]->TCAMactive.back().isMatch(sw[sid]->que[i])){
 
 						// Forward that packet
 						next.setTimeStamp(ts);
