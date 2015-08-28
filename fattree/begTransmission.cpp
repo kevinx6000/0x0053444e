@@ -27,13 +27,15 @@ void Fattree::begTransmission(double timeStamp, Packet pkt){
 				ent = allEntry[nowFlowID][i];
 				nid = ent.getSID();
 
-				// Remove from active
-				sw[nid]->TCAMinactive.remove(sw[nid]->TCAMmapI[pkt]);
-				sw[nid]->TCAMmapI.erase(pkt);
+				// Remove from inactive
+				if(sw[nid]->TCAMmapI.count(pkt) > 0){
+					sw[nid]->TCAMinactive.remove(sw[nid]->TCAMmapI[pkt]);
+					sw[nid]->TCAMmapI.erase(pkt);
 
-				// Update timestamp &  Install at the tail (LRU)
-				ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
-				sw[nid]->TCAMmapA[pkt] = sw[nid]->TCAMactive.push_back(ent);
+					// Update timestamp &  Install at the tail (LRU)
+					ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
+					sw[nid]->TCAMmapA[pkt] = sw[nid]->TCAMactive.push_back(ent);
+				}
 			}
 		}
 	}

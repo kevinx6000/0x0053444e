@@ -28,12 +28,14 @@ void Fattree::endTransmission(double timeStamp, Packet pkt){
 			nid = ent.getSID();
 
 			// Remove from active
-			sw[nid]->TCAMactive.remove(sw[nid]->TCAMmapA[pkt]);
-			sw[nid]->TCAMmapA.erase(pkt);
+			if(sw[nid]->TCAMmapA.count(pkt) > 0){
+				sw[nid]->TCAMactive.remove(sw[nid]->TCAMmapA[pkt]);
+				sw[nid]->TCAMmapA.erase(pkt);
 
-			// Update timestamp &  Install at the tail (LRU
-			ent.setExpire(timeStamp + ENTRY_EXPIRE_TIME);
-			sw[nid]->TCAMmapI[pkt] = sw[nid]->TCAMinactive.push_back(ent);
+				// Install at the tail (LRU)
+				if(sw[nid]->TCAMmapI.count(pkt) == 0)
+					sw[nid]->TCAMmapI[pkt] = sw[nid]->TCAMinactive.push_back(ent);
+			}
 		}
 	}
 }
